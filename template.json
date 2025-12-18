@@ -1,0 +1,14 @@
+{
+  "Actor": {
+    "types": [
+      "contractor",
+      "npc"
+    ]
+  },
+  "Item": {
+    "types": [
+      "equipment",
+      "weapon"
+    ]
+  }
+}

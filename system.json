@@ -1,0 +1,45 @@
+{
+  "id": "HypermallUV",
+  "title": "Hypermall Unlimited Violence",
+  "description": "YOU ARE SCUM. YOU ARE WORTHLESS. DON'T FORGET THAT.",
+  "version": "v0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "authors": [
+    {
+      "name": "AMolwitz",
+      "discord": "Actual",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "module/hypermalluv.mjs"
+  ],
+  "styles": [
+    "css/hypermalluv.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "primaryTokenAttribute": "meat",
+  "secondaryTokenAttribute": "stress",
+  "tertiaryTokenAtribute": "finance",
+  "url": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT",
+  "manifest": "",
+  "download": "",
+  "license": "LICENSE.txt",
+  "changelog": "CHANGELOG.md",
+  "grid": {
+    "distance": 10,
+    "units": "ft"
+  },
+  "background": "systems/hypermalluv/media/hypermalluv_background.png"
+}
