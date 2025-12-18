@@ -33,7 +33,7 @@
   "secondaryTokenAttribute": "stress",
   "tertiaryTokenAtribute": "finance",
   "url": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT",
-  "manifest": "",
+  "manifest": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/blob/main/system.json",
   "download": "",
   "license": "LICENSE.txt",
   "changelog": "CHANGELOG.md",
