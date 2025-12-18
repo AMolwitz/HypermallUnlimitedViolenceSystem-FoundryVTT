@@ -34,7 +34,7 @@
   "tertiaryTokenAtribute": "finance",
   "url": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT",
   "manifest": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/blob/main/system.json",
-  "download": "",
+  "download": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/archive/refs/tags/v0.1.0-alpha.zip",
   "license": "LICENSE.txt",
   "changelog": "CHANGELOG.md",
   "grid": {
