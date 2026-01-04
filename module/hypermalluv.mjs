@@ -4,7 +4,7 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 // Import sheet classes.
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
-import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
+//import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import {
   HypermallContractorData,
   HypermallNPCData,
@@ -45,8 +45,7 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
-let skillDraftApp = null;
-export const socketEventChannel = "system.paranoia";
+export const socketEventChannel = "system.hypermall";
 
 Hooks.once('init', async function () {
 
