@@ -1,0 +1,41 @@
+<section>
+    <div class="ability flexcol flex-group-center hypermall-container hypermall-rolling">
+
+        <span>Dice Roller</span>
+
+        <div class="hypermall-roll-selector">
+            <label class="resource-label hypermall-roll-label">Skill and Stat: </label>
+            <select id="hypermall-roll-stat" class="hypermall-roll-selector" data-dtype="String">
+                {{#each system.abilities as |ability akey|}}
+                {{#if ability.label}}
+                <option vale="{{akey}}">{{ability.label}}</option>
+                {{/if}}
+                {{/each}}
+            </select>
+
+            <select id="hypermall-roll-skill" class="hypermall-roll-selector" data-dtype="String">
+                {{#each system.abilities as |ability|}}
+                {{#each ability.skills as |skill skey|}}
+                <option value="{{skey}}">{{skill.label}}</option>
+                {{/each}}
+                {{/each}}
+            </select>
+
+        </div>
+
+        <div class="hypermall-roll-selector">
+            <label class="resource-label hypermall-roll-label">Passion Modifier: </label>
+            <select id="hypermall-roll-equipment" class="hypermall-roll-selector" data-dtype="Number">
+                <option value=0>-2</option>
+                <option value=1>-1</option>
+                <option value=2>0</option>
+                <option value=3>1</option>
+                <option value=4>2</option>
+                <option value=5>3</option>
+            </select>
+        </div>
+
+        <button id="hypermall-character-roller" class="rollable" type="button">Roll some dice!</button>
+
+    </div>
+</section>
