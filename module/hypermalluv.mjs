@@ -41,9 +41,20 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
     equipment: HypermallEquipmentData
   })
 
+
+/* -------------------------------------------- */
+/*  Init Hook                                   */
+/* -------------------------------------------- */
+let skillDraftApp = null;
+export const socketEventChannel = "system.paranoia";
+
+Hooks.once('init', async function () {
+
   // Register sheet application classes
 actors.unregisterSheet("core", getCompatibleActorSheet());
 items.unregisterSheet("core", getCompatibleItemSheet());
 actors.registerSheet("hypermall", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
 actors.registerSheet("hypermall", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
 items.registerSheet("hypermall", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+
+});
