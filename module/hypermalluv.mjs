@@ -58,3 +58,48 @@ actors.registerSheet("hypermall", HypermallNPCSheet, { types: ["npc"], makeDefau
 items.registerSheet("hypermall", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
 
 });
+
+
+/* -------------------------------------------- */
+/*  Ready Hook                                  */
+/* -------------------------------------------- */
+
+Hooks.once("ready", async function () {
+  // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
+
+
+  // Style items when dragging from the sidebar.
+  let draggedElement = null;
+  let clickTimeout = null;
+
+  document.body.addEventListener('mousedown', (event) => {
+    if (draggedElement) draggedElement.classList.remove('hypermall-dragging-item');
+    clearTimeout(clickTimeout);
+
+    const itemElement = event.target.closest('li.directory-item.item');
+    if (itemElement) {
+      draggedElement = itemElement;
+      draggedElement.classList.add('hypermall-dragging-item');
+
+      // Set a timeout. If mouseup happens before this, it's a click.
+      clickTimeout = setTimeout(() => {
+        clickTimeout = null;
+      }, 200);
+    }
+  });
+
+  document.body.addEventListener('mouseup', () => {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      if (draggedElement) draggedElement.classList.remove('hypermall-dragging-item');
+      draggedElement = null;
+    }
+  });
+
+  document.body.addEventListener('dragend', () => {
+    if (draggedElement) {
+      draggedElement.classList.remove('hypermall-dragging-item');
+      draggedElement = null;
+    }
+  });
+});
