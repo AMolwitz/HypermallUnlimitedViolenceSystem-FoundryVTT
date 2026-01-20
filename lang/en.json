@@ -1,0 +1,7 @@
+{
+  "TYPES.Actor.npc": "NPC",
+  "TYPES.Actor.contractor": "Contractor",
+  "TYPES.Item.equipment": "Equipment",
+  "HYPERMALL.DeleteConfirmTitle": "Delete {name}",
+  "HYPERMALL.DeleteConfirmContent": "Are you sure you want to delete <strong>{name}</strong>? This cannot be undone."
+}
