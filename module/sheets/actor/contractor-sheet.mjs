@@ -41,17 +41,11 @@ export class HypermallContractorSheet extends HypermallActor {
 
     const textEditor = getCompatibleTextEditor()
 
-    context.enrichedAliases = await textEditor.enrichHTML(context.system.secrets.aliases)
-    context.enrichedSecretSocieties = await textEditor.enrichHTML(context.system.secrets.secretSociety)
-    context.enrichedSecretObjective = await textEditor.enrichHTML(context.system.secrets.secretObjective)
-    context.enrichedMutantPowers = await textEditor.enrichHTML(context.system.secrets.mutantPower)
-    context.enrichedServiceGroupFavors = await textEditor.enrichHTML(context.system.secrets.serviceGroupFavors)
-    context.enrichedSecretSocietyFavors = await textEditor.enrichHTML(context.system.secrets.secretSocietyFavors)
-    context.enrichedTreasonousGear = await textEditor.enrichHTML(context.system.secrets.treasonousGear)
-    context.enrichedEvidence = await textEditor.enrichHTML(context.system.secrets.evidence)
-    context.enrichedSecretNotes = await textEditor.enrichHTML(context.system.secrets.notes)
+    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations)
     context.enrichedGear = await textEditor.enrichHTML(context.system.gear)
-    context.enrichedMissionObjectives = await textEditor.enrichHTML(context.system.missionObjectives)
+    context.enrichedPassions = await textEditor.enrichHTML(context.system.passions)
+    context.enrichedPsionisPowers = await textEditor.enrichHTML(context.system.psionicPowers)
+
 
     // Prepare character data and items.
     if (actorData.type == 'contractor') {
@@ -83,7 +77,7 @@ export class HypermallContractorSheet extends HypermallActor {
   _prepareCharacterData(context) {
     // Handle ability scores.
     for (let [k, v] of Object.entries(context.system.abilities)) {
-      v.label = game.i18n.localize(CONFIG.PARANOIA.abilities[k]) ?? k;
+      v.label = game.i18n.localize(CONFIG.HYPERMALL.abilities[k]) ?? k;
     }
   }
 
@@ -96,8 +90,7 @@ export class HypermallContractorSheet extends HypermallActor {
    */
   async _prepareItems(context) {
     // Initialize containers.
-    const publicGear = [];
-    const treasonousGear = [];
+    const gear = [];
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
@@ -106,18 +99,17 @@ export class HypermallContractorSheet extends HypermallActor {
       i.img = i.img || DEFAULT_TOKEN;
       i.enrichedDescription = await TextEditor.enrichHTML(i.system.description);
       // Append to gear.
-      if (i.system.type === 'publicGear') {
-        publicGear.push(i);
+      if (i.system.type === 'gear') {
+        gear.push(i);
       }
       // Append to features.
-      else if (i.system.type === 'treasonousGear') {
-        treasonousGear.push(i);
-      }
+     //else if (i.system.type === 'treasonousGear') {
+     //   treasonousGear.push(i);
+     // }
     }
 
     // Assign and return
-    context.publicGear = publicGear;
-    context.treasonousGear = treasonousGear;
+    context.gear = gear;
   }
 
   /* -------------------------------------------- */
@@ -145,20 +137,20 @@ export class HypermallContractorSheet extends HypermallActor {
       let attributeElement = event.delegateTarget;
       this.checkAttributeValue(attributeElement);
     });
-    html.find('.hypermall-health-indicator').change((event) => {
+    html.find('.hypermall-meat-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
-      const actorHealth = this.actor.system.health;
-      this.validateWellnessChange(eventValue, event.target, actorHealth);
+      const actorMeat = this.actor.system.meat;
+      this.validateThresholdChange(eventValue, event.target, actorMeat);
     });
-    html.find('.hypermall-flag-indicator').change((event) => {
+    html.find('.hypermall-stress-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
-      const actorFlag = this.actor.system.flag;
-      this.validateWellnessChange(eventValue, event.target, actorFlag);
+      const actorStress = this.actor.system.stress;
+      this.validateThresholdChange(eventValue, event.target, actorStress);
     });
-    html.find('.hypermall-moxie').change((event) => {
+    html.find('.hypermall-debt').change((event) => {
       const eventValue = parseInt(event.target.value);
-      const actorMoxie = this.actor.system.moxie;
-      this.validateWellnessChange(eventValue, event.target, actorMoxie);
+      const actorDebt = this.actor.system.debt;
+      this.validateThresholdChange(eventValue, event.target, actorDebt);
     });
     html.on('click', '.gear-create', this._onCreateGear.bind(this));
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
@@ -209,20 +201,13 @@ export class HypermallContractorSheet extends HypermallActor {
   */
   _setSheetHeight(tabName) {
     const defaultHeight = this.constructor.defaultOptions.height;
-    const naughtyHeight = 900;
     const currentHeight = this.position.height;
 
-    if (tabName === 'naughty') {
-      // If the sheet isn't already the naughty height, resize it.
-      if (currentHeight !== naughtyHeight) {
-        this.setPosition({ height: naughtyHeight });
-      }
-    } else {
       // If the sheet isn't already the default height, resize it.
       if (currentHeight !== defaultHeight) {
         this.setPosition({ height: defaultHeight });
       }
-    }
+    
   }
 
   /**
@@ -235,14 +220,14 @@ export class HypermallContractorSheet extends HypermallActor {
   async _onDropItem(event, data) {
     if (!this.isEditable) return false;
 
-    // Find the drop container to determine what kind of gear is being added.
+    // Find the drop container to determine what kind of equipment is being added.
     const dropContainer = event.target.closest("[data-drop-type]");
     if (!dropContainer) return false;
 
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-    if (!["publicGear", "treasonousGear"].includes(dropType)) return false;
+    if (!["gear", "mutation", "psionicPower"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;
@@ -276,8 +261,8 @@ export class HypermallContractorSheet extends HypermallActor {
 
     // Display a confirmation dialog for better UX.
     const confirmed = await Dialog.confirm({
-      title: game.i18n.format("PARANOIA.DeleteConfirmTitle", { name: item.name }),
-      content: `<p>${game.i18n.format("PARANOIA.DeleteConfirmContent", { name: item.name })}</p>`,
+      title: game.i18n.format("HYPERMALL.DeleteConfirmTitle", { name: item.name }),
+      content: `<p>${game.i18n.format("HYPERMALL.DeleteConfirmContent", { name: item.name })}</p>`,
       options: { classes: ["hypermall", "dialog", "hypermall-red-theme"] }
     });
 
@@ -312,119 +297,82 @@ export class HypermallContractorSheet extends HypermallActor {
 
     switch (triggeringElement.id) {
       case 'hypermall-character-roller':
-        const flagLevel = this.actor.system.flag.value;
-        let hurtLevel = (4 - this.actor.system.health.value);
-        let equipmentModifier = parseInt(this.getEquipmentModifierFromSheet(triggeringElement));
-        let initiativeModifier = parseInt(this.getInitiativeModifierFromSheet(triggeringElement));
+        const stressLevel = this.actor.system.stress.value;
+        let meatLevel = this.actor.system.meat.value;
+        let debtLevel = this.actor.system.debt.value;
+        let passionModifier = parseInt(this.gePassionModifierFromSheet(triggeringElement));
 
-        let NODE = this.calculateNODE(triggeringElement, equipmentModifier, initiativeModifier, hurtLevel);
-        let rollString = this.generateRollString(NODE);
+        let Die_Pool = this.calculatePool(triggeringElement, passiontModifier);
+        let rollString = this.generateRollString(Die_Pool);
 
         let roll = await new Roll(rollString).evaluate();
-        // Simplified the displayed formula to reduce confusion. 2 * (Xd6cs>=5) - X is weird.
-        if (NODE < 0) {
-          roll._formula = `${Math.abs(NODE)}d6cs>=5`;
+        // Simplified the displayed formula to reduce confusion.
+        if (Die_Pool < 0) {
+          roll._formula = `${1}d6cs>=5`;
         }
 
-
-        let attractedComputersAttention = this.computerDiceAttractsAttention(roll, flagLevel);
-
-        await this.sendRollResults(roll, NODE, equipmentModifier, hurtLevel, initiativeModifier, flagLevel, attractedComputersAttention);
+        await this.sendRollResults(roll, Die_Pool, passionModifier);
         break;
     }
 
   }
 
-  computerDiceAttractsAttention(roll, flagLevel) {
-    let computerDiceResult = roll.dice.at(-1).results[0].result;
-
-    return computerDiceResult >= (6 - flagLevel)
+  generateRollString(Die_Pool) {
+    if (Die_Pool > 0) return `${Math.abs(Die_Pool)}d6cs>=5`;
+    return `${1}d6cs>=5)`;
   }
 
-  generateRollString(NODE) {
-    if (NODE > 0) return `${Math.abs(NODE)}d6cs>=5`;
-
-    let positiveNode = Math.abs(NODE);
-    return `2 * (${positiveNode}d6cs>=5) - ${positiveNode}`;
-  }
-
-  async sendRollResults(roll, NODE, equipmentModifier, hurtLevel, initiativeModifier, flagLevel, attractedComputersAttention) {
-    let flavor = '';
-    if (NODE === 1) {
-      flavor += `${this.actor.name} puts their fate in Friend Computer's capable lack-of-hands.<br>`
-    }
+  async sendRollResults(roll, Die_Pool, passionModifier) {
     if (NODE < 0) {
-      flavor += 'Rolled with negative node. Non-Successes subtract from your success count! Good luck, citizen.<br>';
+      flavor += 'Rolled with negative die pool. The American Consumer Federation recommends against doing that.<br>';
     }
-    flavor += `Rolled with a level ${equipmentModifier} equipment.`
-    if (hurtLevel != 0) {
-      flavor += `<br>Rolled with ${hurtLevel} less NODE due to current wounds`
-    }
-    if (initiativeModifier != 0) {
-      flavor += `<br>Rolled with ${initiativeModifier} less NODE to jump up ${initiativeModifier} places in the initiaive!`
-    }
+    flavor += `Rolled with a ${passionModifier} passion modifier.`
 
     const message = await roll.toMessage({ flavor, speaker: ChatMessage.getSpeaker({ actor: this.actor }) });
     console.log(message);
-
-    await this.sendComputerRollResults(attractedComputersAttention, roll.dice.at(-1).results[0].result, flagLevel);
   }
 
-  calculateNODE(triggeringElement, equipmentModifier, initiativeModifier, hurtLevel) {
+  calculateDiePool(triggeringElement, passionModifier) {
     const rollData = this.actor.getRollData();
 
-    let NODE = parseInt(this.getStatisticsNODEFromSheet(triggeringElement, rollData));
+    let Die_Pool = parseInt(this.getStatisticsDiePoolFromSheet(triggeringElement, rollData));
 
-    NODE += equipmentModifier;
-    NODE -= initiativeModifier;
-    NODE -= hurtLevel;
+    Die_Pool += passionModifier;
 
-    if (NODE < 0) {
-      return NODE - 1; // "add" Computer Dice
-    }
-
-    return NODE + 1; // add Computer Dice
   }
 
-  getStatisticsNODEFromSheet(htmlElement, rollData) {
+  getStatisticsDiePoolFromSheet(htmlElement, rollData) {
     let stat = htmlElement.form[26].value.toLowerCase()
     let skill = htmlElement.form[27].value
-    let statNODE = parseInt(rollData.abilities[stat].value);
-    let skillNODE;
+    let statDiePool = parseInt(rollData.abilities[stat].value);
+    let skillDiePool;
 
     Object.values(rollData.abilities).forEach(ability => {
 
       if (ability.hasOwnProperty('skills') && ability.skills.hasOwnProperty(skill)) {
-        skillNODE = parseInt(ability.skills[skill].value);
+        skillDiePool = parseInt(ability.skills[skill].value);
       }
     });
 
-    return statNODE + skillNODE;
+    return statDiePool + skillDiePool;
   }
 
-  getEquipmentModifierFromSheet(htmlElement) {
+  getPassionModifierFromSheet(htmlElement) {
     return htmlElement.form[28].value;
   }
 
-  getInitiativeModifierFromSheet(htmlElement) {
-    return htmlElement.form[29].value;
-  }
-
   checkAttributeValue(sender) {
-    const min = -5
-    const max = 5
+    const min = 0
     let value = parseInt(sender.value);
     if (isNaN(value)) {
       sender.value = 0;
     }
-    else if (value > max) {
-      sender.value = max;
-    } else if (value < min) {
+    else if (value < min) {
       sender.value = min;
     }
   }
 
-  validateWellnessChange(eventValue, eventTarget, actorValue) {
+  validateThresholdChange(eventValue, eventTarget, actorValue) {
     if (isNaN(eventValue)) {
       eventTarget.value = actorValue.value;
     }
