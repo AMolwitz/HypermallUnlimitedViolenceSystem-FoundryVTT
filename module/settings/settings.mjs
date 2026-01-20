@@ -4,3 +4,8 @@ export class SystemSettingsKeys {
     }
 
 }
+
+export function registerGameSettings() {
+    game.settings.register(SystemSettingsKeys.SYSTEM, {
+    });
+}
