@@ -2,7 +2,7 @@
   "id": "HypermallUV",
   "title": "Hypermall Unlimited Violence",
   "description": "YOU ARE SCUM. YOU ARE WORTHLESS. DON'T FORGET THAT.",
-  "version": "v0.1.1.12",
+  "version": "v0.1.1.13",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -33,8 +33,8 @@
   "secondaryTokenAttribute": "stress",
   "tertiaryTokenAtribute": "finance",
   "url": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT",
-  "manifest": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/releases/download/v.0.1.12-alpha/system.json",
-  "download": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/archive/refs/tags/v.0.1.12-alpha.zip",
+  "manifest": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/releases/download/v.0.1.13-alpha/system.json",
+  "download": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT/archive/refs/tags/v.0.1.13-alpha.zip",
   "license": "LICENSE.txt",
   "changelog": "CHANGELOG.md",
   "grid": {
