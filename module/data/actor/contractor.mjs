@@ -1,5 +1,4 @@
 import { resourceField, skillField } from "../index.mjs";
-import { SystemSettingsKeys } from "../../settings/settings.mjs";
 
 export class HypermallContractorData extends foundry.abstract.TypeDataModel {
     static defineSchema() {

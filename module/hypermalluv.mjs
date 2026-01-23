@@ -55,6 +55,13 @@ items.registerSheet("hypermall", HypermallEquipmentSheet, { types: ["equipment"]
 
 });
 
+  game.settings.register("hypermalluv", "worldKey", {
+    name: "Unique world key",
+    scope: "world",
+    config: false,
+    type: String,
+    default: "",
+  })
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
