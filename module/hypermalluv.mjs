@@ -40,16 +40,16 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
-export const socketEventChannel = "system.hypermall";
+export const socketEventChannel = "system.hypermalluv";
 
 Hooks.once('init', async function () {
 
   // Register sheet application classes
 actors.unregisterSheet("core", getCompatibleActorSheet());
 items.unregisterSheet("core", getCompatibleItemSheet());
-actors.registerSheet("hypermall", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
-actors.registerSheet("hypermall", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
-items.registerSheet("hypermall", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
+actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
+items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
 
 });
 

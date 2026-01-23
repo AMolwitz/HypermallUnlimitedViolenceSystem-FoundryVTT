@@ -8,7 +8,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
         return {
             meat: resourceField(0, 4), //how to set it when it's 2d6+3+physick?
             debt: resourceField(0, 4), // how to set when it's custom from background?
-            stress: resourceField(0, maximumStress),
+            stress: resourceField(0, 4), // how to set when it's 6+savvy?
             background: new StringField(),
             iclTeam: new StringField(),
             handedness: new StringField(),
