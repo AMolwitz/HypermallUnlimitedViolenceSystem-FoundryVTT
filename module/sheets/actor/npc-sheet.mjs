@@ -18,12 +18,12 @@ export class HypermallNPCSheet extends HypermallActor {
 
     if (actorData.system.meat == undefined) {
       actorData.system.meat = {};
-      actorData.system.meat.value = 0;
+      actorData.system.meat.value = 2;
     }
 
     if (actorData.system.stress == undefined) {
       actorData.system.stress = {};
-      actorData.system.stress.value = 0;
+      actorData.system.stress.value = 2;
     }
 
     if (actorData.system.debt == undefined) {
@@ -33,13 +33,13 @@ export class HypermallNPCSheet extends HypermallActor {
 
     data.system = actorData.system;
 
-    data.enrichedLooks = await TextEditor.enrichHTML(data.system.looks)
-    data.enrichedQuirks = await TextEditor.enrichHTML(data.system.quirks)
-    data.enrichedPlans = await TextEditor.enrichHTML(data.system.plans)
-    data.enrichedBasics = await TextEditor.enrichHTML(data.system.basics)
-    data.enrichedGear = await TextEditor.enrichHTML(data.system.gear)
-    data.enrichedMutantPowers = await TextEditor.enrichHTML(data.system.mutantPowers)
+    data.enrichedBackground = await TextEditor.enrichHTML(data.system.background)
+    data.enrichedPhrenology = await TextEditor.enrichHTML(data.system.phrenology)
+    data.enrichedMoves = await TextEditor.enrichHTML(data.system.moves)
+    data.enrichedMutations = await TextEditor.enrichHTML(data.system.mutations)
+    data.enrichedPsionics = await TextEditor.enrichHTML(data.system.psionics)
     data.enrichedQuote = await TextEditor.enrichHTML(data.system.quote)
+    data.enrichedInventory = await TextEditor.enrichHTML(data.system.inventory)
 
     return data;
   }

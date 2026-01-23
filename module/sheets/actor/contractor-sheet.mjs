@@ -33,11 +33,27 @@ export class HypermallContractorSheet extends HypermallActor {
     context.sheetSettings.isLimited = this.actor.permission == CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED
     context.sheetSettings.isObserver = (this.actor.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER || this.actor.compendium?.locked);
 
+    context.iclDropdown = {
+      0: "HyperMall Group Hogs",
+      1: "Musashi Heavy Industries Manticores",
+      2: "Warpath LLC Geldings",
+      3: "Patriot Defense Systems",
+      4: "FIGHTIN' IRISH",
+      5: "Rotterdam HOUNDS (\"The Rotties\")",
+      6: "Welland Jackfish"
+    }
+    context.handednessDropdown = {
+      0: "Lefthanded",
+      1: "Righthanded",
+      2: "Ambidexterous"
+    }
+
     // Use a safe clone of the actor data for further operations.
     const actorData = this.actor.toObject(false);
 
-    // Add the actor's data to context.data for easier access, as well as flags.
+    // Add the actor's data to context.data for easier access.
     context.system = actorData.system;
+
 
     const textEditor = getCompatibleTextEditor()
 
@@ -45,7 +61,6 @@ export class HypermallContractorSheet extends HypermallActor {
     context.enrichedGear = await textEditor.enrichHTML(context.system.gear)
     context.enrichedPassions = await textEditor.enrichHTML(context.system.passions)
     context.enrichedPsionisPowers = await textEditor.enrichHTML(context.system.psionicPowers)
-
 
     // Prepare character data and items.
     if (actorData.type == 'contractor') {
@@ -102,10 +117,6 @@ export class HypermallContractorSheet extends HypermallActor {
       if (i.system.type === 'gear') {
         gear.push(i);
       }
-      // Append to features.
-     //else if (i.system.type === 'treasonousGear') {
-     //   treasonousGear.push(i);
-     // }
     }
 
     // Assign and return
@@ -147,7 +158,7 @@ export class HypermallContractorSheet extends HypermallActor {
       const actorStress = this.actor.system.stress;
       this.validateThresholdChange(eventValue, event.target, actorStress);
     });
-    html.find('.hypermall-debt').change((event) => {
+    html.find('.hypermall-debt-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
       const actorDebt = this.actor.system.debt;
       this.validateThresholdChange(eventValue, event.target, actorDebt);
@@ -184,10 +195,7 @@ export class HypermallContractorSheet extends HypermallActor {
     // Prepare the data for the new item using the modern data model.
     const itemData = {
       name: "New Gear",
-      type: "equipment",
-      system: {
-        type: header.dataset.type // This will be 'publicGear' or 'treasonousGear'
-      }
+      type: "gear",
     };
 
     // Create the item directly on the actor.
@@ -220,14 +228,14 @@ export class HypermallContractorSheet extends HypermallActor {
   async _onDropItem(event, data) {
     if (!this.isEditable) return false;
 
-    // Find the drop container to determine what kind of equipment is being added.
+    // Find the drop container to determine what kind of gear is being added.
     const dropContainer = event.target.closest("[data-drop-type]");
     if (!dropContainer) return false;
 
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-    if (!["gear", "mutation", "psionicPower"].includes(dropType)) return false;
+  if (!["gear", "mutation", "psionicPower"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;
@@ -263,7 +271,7 @@ export class HypermallContractorSheet extends HypermallActor {
     const confirmed = await Dialog.confirm({
       title: game.i18n.format("HYPERMALL.DeleteConfirmTitle", { name: item.name }),
       content: `<p>${game.i18n.format("HYPERMALL.DeleteConfirmContent", { name: item.name })}</p>`,
-      options: { classes: ["hypermall", "dialog", "hypermall-red-theme"] }
+      options: { classes: ["hypermall", "dialog", "hypermall-theme"] }
     });
 
     if (confirmed) {
@@ -294,12 +302,11 @@ export class HypermallContractorSheet extends HypermallActor {
     event.preventDefault();
     const triggeringElement = event.currentTarget;
 
-
     switch (triggeringElement.id) {
       case 'hypermall-character-roller':
-        const stressLevel = this.actor.system.stress.value;
-        let meatLevel = this.actor.system.meat.value;
-        let debtLevel = this.actor.system.debt.value;
+        //const stressLevel = this.actor.system.stress.value;
+        //let meatLevel = this.actor.system.meat.value;
+        //let debtLevel = this.actor.system.debt.value;
         let passionModifier = parseInt(this.gePassionModifierFromSheet(triggeringElement));
 
         let Die_Pool = this.calculatePool(triggeringElement, passiontModifier);
@@ -316,6 +323,7 @@ export class HypermallContractorSheet extends HypermallActor {
     }
 
   }
+
 
   generateRollString(Die_Pool) {
     if (Die_Pool > 0) return `${Math.abs(Die_Pool)}d6cs>=5`;
@@ -357,7 +365,7 @@ export class HypermallContractorSheet extends HypermallActor {
     return statDiePool + skillDiePool;
   }
 
-  getPassionModifierFromSheet(htmlElement) {
+  getPassionsModifierFromSheet(htmlElement) {
     return htmlElement.form[28].value;
   }
 
