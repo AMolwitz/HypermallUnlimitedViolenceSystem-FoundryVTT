@@ -1,3 +1,5 @@
+import { resourceField, skillField } from "../index.mjs";
+
 export class HypermallNPCData extends foundry.abstract.TypeDataModel {
 
     static defineSchema() {
