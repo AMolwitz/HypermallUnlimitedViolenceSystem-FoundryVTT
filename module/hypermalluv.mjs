@@ -10,7 +10,6 @@ import {
   HypermallNPCData,
   HypermallEquipmentData
 } from "./data/index.mjs";
-import { registerGameSettings } from "./settings/settings.mjs";
 import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActorSheet, getCompatibleItemSheet } from "./utils/compatibility.mjs";
 
   // Add utility classes to the global game object so that they're more easily
@@ -21,8 +20,6 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
   };
   const items = getCompatibleItemsObject();
   const actors = getCompatibleActorsObject();
-
-  registerGameSettings()
 
   // Add custom constants for configuration.
   CONFIG.HYPERMALL = HYPERMALL;
