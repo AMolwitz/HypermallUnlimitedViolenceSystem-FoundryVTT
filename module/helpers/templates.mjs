@@ -13,7 +13,7 @@ export const preloadHandlebarsTemplates = async function () {
     "actor-hypermall-psionics": "systems/hypermalluv/templates/actor/parts/actor-psionics.html",
     "actor-hypermall-passions": "systems/hypermalluv/templates/actor/parts/actor-passions.html",
     "actor-foundry-data": "systems/hypermalluv/templates/actor/parts/actor-foundry-data.html",
-    "actor-gear-list": "systems/hypermall/templates/actor/parts/actor-gear-list.html",
+    "actor-gear-list": "systems/hypermalluv/templates/actor/parts/actor-gear-list.html",
 //systems/HMUV/templates/actor/parts/actor-foundry-data.html
     // App partials.
   };

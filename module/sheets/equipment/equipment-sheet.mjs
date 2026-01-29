@@ -12,7 +12,7 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
 
     /** @override */
     get template() {
-        return `systems/hypermall/templates/equipment/equipment-sheet.html`;
+        return `systems/hypermalluv/templates/equipment/equipment-sheet.html`;
     }
 
     /** @override */

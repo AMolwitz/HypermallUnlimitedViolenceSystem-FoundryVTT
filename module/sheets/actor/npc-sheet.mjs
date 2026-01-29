@@ -4,7 +4,7 @@ export class HypermallNPCSheet extends HypermallActor {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["hypermall", "sheet", "actor"],
-      template: "systems/hypermall/templates/actor/npc-sheet.html",
+      template: "systems/hypermalluv/templates/actor/npc-sheet.html",
       width: 1100,
       height: 475
     });

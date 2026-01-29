@@ -3,7 +3,7 @@ import { getCompatibleActorSheet } from "../../utils/compatibility.mjs";
 export class HypermallActor extends getCompatibleActorSheet() {
     /** @override */
     get template() {
-        return `systems/hypermall/templates/actor/${this.actor.type}-sheet.html`;
+        return `systems/hypermalluv/templates/actor/${this.actor.type}-sheet.html`;
     }
 
     /** @override */

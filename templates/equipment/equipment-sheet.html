@@ -13,14 +13,9 @@
 
     <div class="tab" data-group="primary-tabs" data-tab="description">
       <div class="editor">
-                        {{editor
-                        enrichedDescription
-                        target="system.description"
-                        button=true
-                        engine="prosemirror"
-                        editable=editable
-                        collaborate=false }}
+        {{editor description target="system.description" button=true owner=owner editable=editable}}
       </div>
     </div>
   </section>
 </form>
+

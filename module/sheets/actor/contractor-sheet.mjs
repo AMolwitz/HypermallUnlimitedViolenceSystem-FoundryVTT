@@ -12,7 +12,7 @@ export class HypermallContractorSheet extends HypermallActor {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["hypermall", "sheet", "actor"],
-      template: "systems/hypermall/templates/actor/contractor-sheet.html",
+      template: "systems/hypermalluv/templates/actor/contractor-sheet.html",
       width: 900,
       height: 675,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
