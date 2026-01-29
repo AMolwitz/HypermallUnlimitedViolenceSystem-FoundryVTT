@@ -3,6 +3,10 @@
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <div class="header-fields">
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+      <div class="cost-field">
+        <label for="cost">Debt:</label>
+        <input name="system.cost" type="number" value="{{system.cost}}" placeholder="0" />
+      </div>
     </div>
   </header>
 
@@ -10,12 +14,27 @@
     <div class="tabs" data-group="primary-tabs">
       <a class="items-title tab" data-tab="description">Description</a>
     </div>
-
     <div class="tab" data-group="primary-tabs" data-tab="description">
       <div class="editor">
-        {{editor description target="system.description" button=true owner=owner editable=editable}}
+        {{editor
+        enrichedDescription
+        target="system.description"
+        button=true
+        engine="prosemirror"
+        editable=editable
+        collaborate=false }}
+      </div>
+    </div>
+    <div class="tab" data-group="primary-tabs" data-tab="effects">
+      <div class="editor">
+        {{editor
+        enrichedDescription
+        target="system.description"
+        button=true
+        engine="prosemirror"
+        editable=editable
+        collaborate=false }}
       </div>
     </div>
   </section>
 </form>
-
