@@ -8,6 +8,17 @@
         <input name="system.cost" type="number" value="{{system.cost}}" placeholder="0" />
       </div>
     </div>
+    <div class="tab" data-group="primary-tabs" data-tab="tags">
+      <div class="editor">
+        {{editor
+        enrichedTags
+        target="system.description"
+        button=true
+        engine="prosemirror"
+        editable=editable
+        collaborate=false }}
+      </div>
+    </div>
   </header>
 
   <section class="sheet-body">
