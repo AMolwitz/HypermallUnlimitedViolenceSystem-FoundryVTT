@@ -24,6 +24,7 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
 
         data.enrichedDescription = await TextEditor.enrichHTML(data.system.description);
         data.enrichedTags = await TextEditor.enrichHTML(data.system.tags);
+        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects ?? '');
 
         return data;
     }
