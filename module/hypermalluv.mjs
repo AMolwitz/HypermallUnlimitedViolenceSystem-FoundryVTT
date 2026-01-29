@@ -22,10 +22,16 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
   const items = getCompatibleItemsObject();
   const actors = getCompatibleActorsObject();
 
+/* -------------------------------------------- */
+/*  Init Hook                                   */
+/* -------------------------------------------- */
+export const socketEventChannel = "system.hypermalluv";
+
+Hooks.once('init', async function () {
+
   // Define custom Document classes
   CONFIG.Actor.documentClass = HypermallActor;
   CONFIG.Item.documentClass = HypermallEquipment;
-
 
   Object.assign(CONFIG.Actor.dataModels, {
     contractor: HypermallContractorData,
@@ -34,32 +40,26 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
 
   Object.assign(CONFIG.Item.dataModels, {
     equipment: HypermallEquipmentData
-  })
-
-
-/* -------------------------------------------- */
-/*  Init Hook                                   */
-/* -------------------------------------------- */
-export const socketEventChannel = "system.hypermalluv";
-
-Hooks.once('init', async function () {
+  });
 
   // Register sheet application classes
-actors.unregisterSheet("core", getCompatibleActorSheet());
-items.unregisterSheet("core", getCompatibleItemSheet());
-actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
-actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
-items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+  actors.unregisterSheet("core", getCompatibleActorSheet());
+  items.unregisterSheet("core", getCompatibleItemSheet());
+  actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
+  actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
+  actors.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
 
-});
-
+  // Register settings
   game.settings.register("hypermalluv", "worldKey", {
     name: "Unique world key",
     scope: "world",
     config: false,
     type: String,
     default: "",
-  })
+  });
+
+});
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
