@@ -4,15 +4,15 @@
     <div class="header-fields">
       <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
       <div class="cost-field">
-        <label for="cost">Debt:</label>
+        <label for="cost">Cost:</label>
         <input name="system.cost" type="number" value="{{system.cost}}" placeholder="0" />
       </div>
     </div>
   </header>
 
-      <div class="section">
-      <h2>Tags</h2>
-      <div class="editor">
+    <label for="system.tags" class="resource-label">Tags</label>
+    <div class="section">
+      <div class="hypermall-editor-container">
         {{editor
         enrichedTags
         target="system.tags"
@@ -24,9 +24,9 @@
     </div>
 
   <section class="sheet-body">
+    <label for="system.description" class="resource-label">Description</label>
     <div class="section">
-      <h2>Description</h2>
-      <div class="editor">
+      <div class="hypermall-editor-container">
         {{editor
         enrichedDescription
         target="system.description"
@@ -35,14 +35,11 @@
         editable=editable
         collaborate=false }}
       </div>
-      <div class="description-display">
-        {{{enrichedDescription}}}
-      </div>
     </div>
 
-    <div class="section">
-      <h2>Effects</h2>
-      <div class="editor">
+    <div class="sheet-body">
+      <label for="system.effects" class="resource-label">Effects</label>
+      <div class="hypermall-editor-container">
         {{editor
         enrichedEffects
         target="system.effects"
