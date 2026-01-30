@@ -83,13 +83,20 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
     }
 
     static migrateData(source) {
-        const maximumStress = game.settings.get(SystemSettingsKeys.SYSTEM, 6+Savvy);
-        if (source.stress.value > maximumStress) {
-            source.stress.max = maximumStress;
+        try {
+            // Ensure stress maximum is at least 6 + savvy (if available).
+            const savvy = source?.abilities?.savvy?.value ?? 0;
+            const maximumStress = 6 + Number(savvy);
+            if (source?.stress?.value > maximumStress) {
+                source.stress.max = maximumStress;
+            }
+            if (source?.stress?.value > (source?.stress?.max ?? maximumStress)) {
+                source.stress.value = source.stress.max ?? maximumStress;
+            }
+            return super.migrateData(source);
+        } catch (e) {
+            console.error("HypermallContractorData.migrateData error:", e);
+            try { return super.migrateData(source); } catch (err) { console.error("super.migrateData also failed:", err); return source; }
         }
-        if (source.stress.value > source.stress.max) {
-            source.stress.value = source.stress.max;
-        }
-        return super.migrateData(source);
     }
 }

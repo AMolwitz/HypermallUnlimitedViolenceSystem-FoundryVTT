@@ -10,6 +10,7 @@
     </div>
   </header>
 
+  <section class="sheet-body">
     <label for="system.tags" class="resource-label">Tags</label>
     <div class="section">
       <div class="hypermall-editor-container">
@@ -22,6 +23,7 @@
         collaborate=false }}
       </div>
     </div>
+  </section>
 
   <section class="sheet-body">
     <label for="system.description" class="resource-label">Description</label>
@@ -36,18 +38,18 @@
         collaborate=false }}
       </div>
     </div>
+  </section>
 
-    <div class="sheet-body">
-      <label for="system.effects" class="resource-label">Effects</label>
-      <div class="hypermall-editor-container">
-        {{editor
-        enrichedEffects
-        target="system.effects"
-        button=true
-        engine="prosemirror"
-        editable=editable
-        collaborate=false }}
-      </div>
+  <section class="sheet-body">
+    <label for="system.effects" class="resource-label">Effects</label>
+    <div class="hypermall-editor-container">
+      {{editor
+      enrichedEffects
+      target="system.effects"
+      button=true
+      engine="prosemirror"
+      editable=editable
+      collaborate=false }}
     </div>
   </section>
 </form>
