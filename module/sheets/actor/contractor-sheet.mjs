@@ -15,7 +15,7 @@ export class HypermallContractorSheet extends HypermallActor {
       template: "systems/hypermalluv/templates/actor/contractor-sheet.html",
       width: 900,
       height: 675,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "competencies" }]
     });
   }
 
@@ -43,8 +43,8 @@ export class HypermallContractorSheet extends HypermallActor {
       6: "Welland Jackfish"
     }
     context.handednessDropdown = {
-      0: "Lefthanded",
-      1: "Righthanded",
+      0: "Left-handed",
+      1: "Right-handed",
       2: "Ambidexterous"
     }
 
@@ -128,6 +128,10 @@ export class HypermallContractorSheet extends HypermallActor {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    // Ensure dropdowns reflect current values
+    const handedSelect = html.find('select[name="system.handedness"]');
+    if (handedSelect.length) handedSelect.val(this.actor.system?.handedness ?? "");
 
     // -------------------------------------------------------------
     // Everything below here is only needed if the sheet is editable

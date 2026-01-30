@@ -72,13 +72,13 @@ export class HypermallActor extends Actor {
 
       for (let [abilityName, ability] of Object.entries(data.abilities)) {
         let shorthand = this.getAbilityShorthand(abilityName);
-        data[abilityName] = ability.value;
+        data[abilityName] = ability.value ?? 0;
         if (shorthand !== '') {
-          data[shorthand] = ability.value;
+          data[shorthand] = ability.value ?? 0;
         }
-        for (let [skillName, skill] of Object.entries(ability.skills)) {
-          let santiziedName = skillName.replace(' ', '').toLocaleLowerCase();
-          data[santiziedName] = skill.value;
+        for (let [skillName, skill] of Object.entries(ability.skills ?? {})) {
+          let sanitizedName = skillName.replace(/\s+/g, '').toLowerCase();
+          data[sanitizedName] = skill?.value ?? 0;
         }
       }
     }

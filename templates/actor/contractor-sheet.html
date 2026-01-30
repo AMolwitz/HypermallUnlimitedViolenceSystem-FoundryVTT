@@ -32,9 +32,9 @@
         </div>
 
         <div class="resource flex-group-center">
-          <label for="system.icl" class="resource-label">FAVORITE ICL TEAM</label>
+          <label for="system.iclTeam" class="resource-label">FAVORITE ICL TEAM</label>
           <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="system.icl" value="{{system.icl}}"
+            <input type="text" name="system.iclTeam" value="{{system.iclTeam}}"
               data-dtype="String" />
           </div>
         </div>
@@ -42,8 +42,12 @@
         <div class="resource flex-group-center">
           <label for="system.handedness" class="resource-label">HANDEDNESS</label>
           <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="system.handedness"
-              value="{{system.handedness}}" data-dtype="String" />
+            <select name="system.handedness" data-dtype="String" class="hypermall-handedness-select">
+              <option value="">(None)</option>
+              {{#each handednessDropdown}}
+                <option value="{{@key}}">{{this}}</option>
+              {{/each}}
+            </select>
           </div>
         </div>
 
@@ -113,12 +117,11 @@
     {{!-- Default tab is specified in actor-sheet.mjs --}}
     <a class="item" data-tab="competencies">Basic Competencies</a>
     <a class="item" data-tab="thresholds">Holistic Wellness (Thresholds)</a>
-    <a class="item" data-tab="mutations">Freakish Mutations</a>
-    <a class="item" data-tab="psionics">Supernatural Psionics</a>
+    <a class="item" data-tab="mutations">Mutations</a>
+    <a class="item" data-tab="psionics">Psionics</a>
     <a class="item" data-tab="passions">Passions</a>
     <a class="item" data-tab="gear">Gear</a>
     <a class="item" data-tab="foundry">Foundry Data</a>
-    {{/unless}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -131,30 +134,30 @@
 
     {{!-- Holistic Wellness (Thresholds) Tab --}}
     <div class="tab hypermall-thresholds" data-group="primary" data-tab="thresholds">
-      {{> actor-thresholds-tab"}}
+      {{> "actor-thresholds"}}
     </div>
 
-    {{!-- Freakish Mutations Tab --}}
+    {{!-- Mutations Tab --}}
     <div class="tab hypermall-mutations" data-group="primary" data-tab="mutations">
-      {{> "actor-mutations-tab"}}
+      {{> "actor-mutations"}}
     </div>
 
-    {{!-- Foundry Information Tab --}}
+    {{!-- Psionics Tab --}}
     <div class="tab hypermall-psionics" data-group="primary" data-tab="psionics">
-      {{> "actor-foundry-data"}}
+      {{> "actor-psionics"}}
     </div>
 
     {{!-- Passions Tab --}}
     <div class="tab hypermall-passions" data-group="primary" data-tab="passions">
-      {{> "actor-passions.html"}}
+      {{> "actor-passions"}}
     </div>
 
     {{!-- Gear Tab --}}
     <div class="tab hypermall-gear" data-group="primary" data-tab="gear">
-      {{> "actor-gear"}}
+      {{> "actor-gear-list"}}
 
         {{!-- Foundry Information --}}
-    <div class="tab hypermall-role" data-group="primary" data-tab="foundry">
+    <div class="tab hypermall-foundry" data-group="primary" data-tab="foundry">
       {{> "actor-foundry-data"}}
     </div>
 

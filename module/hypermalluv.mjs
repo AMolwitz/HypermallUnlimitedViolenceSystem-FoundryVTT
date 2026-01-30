@@ -5,7 +5,7 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
 import { HypermallEquipmentSheet } from "./sheets/equipment/equipment-sheet.mjs";
-//import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
+import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import {
   HypermallContractorData,
   HypermallNPCData,
@@ -41,6 +41,9 @@ Hooks.once('init', async function () {
   Object.assign(CONFIG.Item.dataModels, {
     equipment: HypermallEquipmentData
   });
+
+  // Preload Handlebars partial templates so sheet partials are available
+  await preloadHandlebarsTemplates();
 
   // Register sheet application classes
   actors.unregisterSheet("core", getCompatibleActorSheet());

@@ -6,12 +6,12 @@
 export const preloadHandlebarsTemplates = async function () {
   const templates = {
     // Actor partials.
-    "actor-hypermall-competencies": "systems/hypermalluv/templates/actor/parts/actor-competencies.html",
-    "actor-hypermall-thresholds": "systems/hypermalluv/templates/actor/parts/thresholds.html",
+    "actor-competencies": "systems/hypermalluv/templates/actor/parts/actor-competencies.html",
+    "actor-thresholds": "systems/hypermalluv/templates/actor/parts/actor-thresholds.html",
     "actor-dice-roller": "systems/hypermalluv/templates/actor/parts/actor-dice-roller.html",
-    "actor-hypermall-mutations": "systems/hypermalluv/templates/actor/parts/actor-mutations.html",
-    "actor-hypermall-psionics": "systems/hypermalluv/templates/actor/parts/actor-psionics.html",
-    "actor-hypermall-passions": "systems/hypermalluv/templates/actor/parts/actor-passions.html",
+    "actor-mutations": "systems/hypermalluv/templates/actor/parts/actor-mutations.html",
+    "actor-psionics": "systems/hypermalluv/templates/actor/parts/actor-psionics.html",
+    "actor-passions": "systems/hypermalluv/templates/actor/parts/actor-passions.html",
     "actor-foundry-data": "systems/hypermalluv/templates/actor/parts/actor-foundry-data.html",
     "actor-gear-list": "systems/hypermalluv/templates/actor/parts/actor-gear-list.html",
 //systems/HMUV/templates/actor/parts/actor-foundry-data.html

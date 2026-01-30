@@ -20,20 +20,6 @@
         </div>
 
         <div class="resource flex-group-center">
-          <label for="system.background" class="resource-label">Background</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="system.background" value="{{system.background}}" data-dtype="String" />
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="system.phrenology" class="resource-label">Phrenology</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="system.phrenology" value="{{system.phrenology}}" data-dtype="String" />
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
           <label for="system.meat" class="resource-label">Meat</label>
           <div class="resource-content flexrow flex-center flex-between">
             <input type="number" name="system.meat.value" value="{{system.meat.value}}" data-dtype="Number" />
@@ -61,9 +47,7 @@
   <!-- Sheet Tab Navigation -->
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="moves">Moves</a>
-    <a class="item" data-tab="mutations">Mutations</a>
-    <a class="item" data-tab="psionics">Psionics</a>
+    <a class="item" data-tab="actions">Actions</a>
     <a class="item" data-tab="inventory">Inventory</a>
     <a class="item" data-tab="foundry">Foundry Data</a>
   </nav>
@@ -83,21 +67,15 @@
       <div class="enriched content">{{{enrichedQuote}}}</div>
     </div>
 
-    <!-- Moves Tab -->
-    <div class="tab hypermall-moves" data-group="primary" data-tab="moves">
+    <!-- Actions Tab -->
+    <div class="tab hypermall-actions" data-group="primary" data-tab="actions">
       <h3>Moves</h3>
       <div class="enriched content">{{{enrichedMoves}}}</div>
-    </div>
-
-    <!-- Mutations Tab -->
-    <div class="tab hypermall-mutations" data-group="primary" data-tab="mutations">
-      {{> "actor-mutations"}}
+      
+      <h3>Mutations</h3>
       <div class="enriched content">{{{enrichedMutations}}}</div>
-    </div>
 
-    <!-- Psionics Tab -->
-    <div class="tab hypermall-psionics" data-group="primary" data-tab="psionics">
-      {{> "actor-psionics"}}
+      <h3>Psionics</h3>
       <div class="enriched content">{{{enrichedPsionics}}}</div>
     </div>
 

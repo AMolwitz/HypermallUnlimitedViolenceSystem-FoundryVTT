@@ -7,8 +7,8 @@ export class HypermallEquipmentData extends foundry.abstract.TypeDataModel {
             description: new StringField(),
             brandLine: new StringField(),
             cost: new NumberField(),
-            effect: new StringField(),
-            assigned: new BooleanField({ initial: false }),
+            tags: new StringField(),
+            effects: new StringField(),
             type: new StringField()
         }
     }

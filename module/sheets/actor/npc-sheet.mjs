@@ -6,7 +6,8 @@ export class HypermallNPCSheet extends HypermallActor {
       classes: ["hypermall", "sheet", "actor"],
       template: "systems/hypermalluv/templates/actor/npc-sheet.html",
       width: 1100,
-      height: 475
+      height: 475,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
     });
   }
 

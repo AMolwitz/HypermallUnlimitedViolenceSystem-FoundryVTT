@@ -1,0 +1,26 @@
+<section class="grid grid-4col">
+    {{#each system.abilities as |ability akey|}}
+    {{#if ability.label}}
+    <div class="ability flexcol flex-group-center hypermall-container">
+        <div class="hypermall-header hypermall-attribute-container">
+            <label for="system.abilities.{{akey}}.value" class="resource-label flexlarge align-left hypermall-attribute-label"
+                data-label="{{ability.label}}">{{ability.label}}</label>
+            <input type="number" class="hypermall-rolling-atribute  hypermall-attribute-input" name="system.abilities.{{akey}}.value"
+                value="{{ability.value}}" data-dtype="Number" />
+        </div>
+
+        {{#each ability.skills as |skill skey|}}
+
+        <div class="hypermall-attribute-container">
+            <label for="system.abilities.skills.{{skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left"
+                data-label="{{skill.label}}">{{skill.label}}</label>
+            <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input" name="system.abilities.{{akey}}.skills.{{skey}}.value"
+                value="{{skill.value}}" data-dtype="Number" />
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    {{/each}}
+</section>
+
+{{> "actor-dice-roller"}}
