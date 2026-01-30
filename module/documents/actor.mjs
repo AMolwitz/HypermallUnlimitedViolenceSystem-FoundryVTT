@@ -93,7 +93,17 @@ export class HypermallActor extends Actor {
   async _preCreate(data, options, userId) {
     if ((await super._preCreate(data, options, userId)) === false) return false;
 
+    const prototypeToken = this.buildDynamicTokenRingData(this.system.securityClearance);
+    if (this.type === "contractor") Object.assign(prototypeToken, {
+      sight: { enabled: true }, actorLink: true,
+    });
+
     this.updateSource({
+      "prototypeToken.ring.enabled": prototypeToken.enabled,
+      "prototypeToken.ring.subject.scale": prototypeToken.scale,
+      "prototypeToken.ring.colors.ring": prototypeToken.color,
+      "prototypeToken.ring.effects": prototypeToken.effects,
+      "prototypeToken.sight": prototypeToken.sight,
       "prototypeToken.actorLink": prototypeToken.actorLink ?? false
     });
 
