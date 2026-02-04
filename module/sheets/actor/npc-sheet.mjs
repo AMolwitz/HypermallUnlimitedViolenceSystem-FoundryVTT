@@ -1,4 +1,6 @@
 import { HypermallActor } from "./actor-sheet.mjs";
+import { getCompatibleTextEditor } from "../../utils/compatibility.mjs";
+
 export class HypermallNPCSheet extends HypermallActor {
   /** @override */
   static get defaultOptions() {
@@ -32,16 +34,70 @@ export class HypermallNPCSheet extends HypermallActor {
       actorData.system.debt.value = 0;
     }
 
-    data.system = actorData.system;
+    context.system = actorData.system;
+    
+    const textEditor = getCompatibleTextEditor()
+    //data.system = actorData.system;
 
     data.enrichedBackground = await TextEditor.enrichHTML(data.system.background)
     data.enrichedPhrenology = await TextEditor.enrichHTML(data.system.phrenology)
     data.enrichedMoves = await TextEditor.enrichHTML(data.system.moves)
-    data.enrichedMutations = await TextEditor.enrichHTML(data.system.mutations)
-    data.enrichedPsionics = await TextEditor.enrichHTML(data.system.psionics)
+    //data.enrichedMutations = await TextEditor.enrichHTML(data.system.mutations)
+    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics)
+    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations)
     data.enrichedQuote = await TextEditor.enrichHTML(data.system.quote)
-    data.enrichedInventory = await TextEditor.enrichHTML(data.system.inventory)
+    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear)
 
     return data;
   }
+
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
+    if (!this.isEditable) return;
+
+    html.find('.hypermall-meat-indicator').change(async (event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorValue = this.actor.system?.meat;
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.meat.value');
+    });
+
+    html.find('.hypermall-st-indicator').change(async (event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorValue = this.actor.system?.st;
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.st.value');
+    });
+
+    html.find('.hypermall-dt-indicator').change(async (event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorValue = this.actor.system?.dt;
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.dt.value');
+    });
+  }
+
+  async _validateAndPersistThreshold(eventValue, eventTarget, actorValue, fieldName) {
+    try {
+      if (!actorValue) return;
+      if (isNaN(eventValue)) {
+        eventTarget.value = actorValue.value ?? 0;
+        return;
+      }
+      //const min = Number(actorValue.min ?? 0);
+      const max = 6;//Number(actorValue.max);
+      const current = Number(actorValue?.value ?? 0);
+      if (eventValue > max) {
+        const update = {};
+        update[fieldName] = max;
+        await this.actor.update(update);
+      }
+      else {
+        const update = {};
+        update[fieldName] = eventValue;
+        await this.actor.update(update);
+      }
+    } catch (err) {
+      console.error('validateThresholdChange error:', err);
+    }
+  }
+
 }

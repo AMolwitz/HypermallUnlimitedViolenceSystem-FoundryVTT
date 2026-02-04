@@ -8,16 +8,15 @@
             <select id="hypermall-roll-stat" class="hypermall-roll-selector" data-dtype="String">
                 {{#each system.abilities as |ability akey|}}
                 {{#if ability.label}}
-                <option vale="{{akey}}">{{ability.label}}</option>
+                <option value="{{akey}}">{{ability.label}}</option>
                 {{/if}}
                 {{/each}}
             </select>
 
             <select id="hypermall-roll-skill" class="hypermall-roll-selector" data-dtype="String">
-                {{#each system.abilities as |ability|}}
-                {{#each ability.skills as |skill skey|}}
+                <option value="">(none)</option>
+                {{#each system.skills as |skill skey|}}
                 <option value="{{skey}}">{{skill.label}}</option>
-                {{/each}}
                 {{/each}}
             </select>
 
@@ -25,7 +24,7 @@
 
         <div class="hypermall-roll-selector">
             <label class="resource-label hypermall-roll-label">Passion Modifier: </label>
-            <select id="hypermall-roll-equipment" class="hypermall-roll-selector" data-dtype="Number">
+            <select id="hypermall-roll-passions" class="hypermall-roll-selector" data-dtype="Number">
                 <option value=0>-2</option>
                 <option value=1>-1</option>
                 <option value=2>0</option>
@@ -37,5 +36,7 @@
 
         <button id="hypermall-character-roller" class="rollable" type="button">Roll some dice!</button>
 
+        <h3>Die Pool</h3>
+        
     </div>
 </section>

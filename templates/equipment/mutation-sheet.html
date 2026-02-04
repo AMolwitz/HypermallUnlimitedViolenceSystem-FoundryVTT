@@ -7,24 +7,11 @@
         <input class="hypermall-actor-name" type="text" name="name" value="{{item.name}}"
             data-dtype="String" />
       </div>
-      <label for="price" class="resource-label">Price</label>
-      <input name="system.price" type="number" value="{{system.price}}" placeholder="1" />
       </div>
+    </div>
   </header>
 
   <div class="hypermall-item-info-container grid-span-4">
-    <div class="sheet-body">
-      <label for="system.tags" class="resource-label">Tags</label>
-        <div class="hypermall-editor-container">
-          {{editor
-          enrichedTags
-          target="system.tags"
-          button=true
-          engine="prosemirror"
-          editable=editable
-          collaborate=false }}
-        </div>
-      </div>
 
       <div class="sheet-body">
         <label for="system.description" class="resource-label">Description</label>

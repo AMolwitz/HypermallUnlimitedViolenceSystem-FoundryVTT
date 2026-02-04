@@ -6,9 +6,9 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
         //const startingXP = game.settings.get(SystemSettingsKeys.SYSTEM, SystemSettingsKeys.STARTING_XP);
 
         return {
-            meat: resourceField(0, 4), //how to set it when it's 2d6+3+physick?
-            debt: resourceField(0, 4), // how to set when it's custom from background?
-            stress: resourceField(0, 4), // how to set when it's 6+savvy?
+            meat: resourceField(0, 99), //how to set it when it's 2d6+3+physick?
+            debt: resourceField(0, 99), // how to set when it's custom from background?
+            stress: resourceField(0, 6), // how to set when it's 6+savvy?
             background: new StringField(),
             iclTeam: new StringField(),
             handedness: new StringField(),
@@ -78,7 +78,15 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
             }),
             allGear: new StringField({ initial: "List any of the gear you're responsible for here. Be sure to keep it in tip-top shape!" }),
             mutations: new StringField({ initial: "Note your mutations." }),
-            psionicPowers: new StringField({ initial: "Note your psionic powers." }),
+            psionics: new StringField({ initial: "Note your psionic powers." }),
+            height: new StringField({ initial: "" }),
+            temperament: new StringField({ initial: "" }),
+            style: new StringField({ initial: "" }),
+            build: new StringField({ initial: "" }),
+            deaths: new NumberField({ initial: 0 }),
+            mt: resourceField(0, 99),
+            st: resourceField(0, 99),
+            dt: resourceField(0, 99),
         }
     }
 
@@ -86,13 +94,22 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
         try {
             // Ensure stress maximum is at least 6 + savvy (if available).
             const savvy = source?.abilities?.savvy?.value ?? 0;
-            const maximumStress = 6 + Number(savvy);
-            if (source?.stress?.value > maximumStress) {
-                source.stress.max = maximumStress;
+            const s_t = source?.st?.value ?? 6 + Number(savvy);
+            if (source?.stress?.value.max < s_t) {
+                source.stress.max = s_t;
             }
-            if (source?.stress?.value > (source?.stress?.max ?? maximumStress)) {
-                source.stress.value = source.stress.max ?? maximumStress;
+            if (source?.stress?.value > s_t) {
+                source.stress.value = source.stress.max ?? s_t;
             }
+
+            // Defaulting for newly added fields
+            if (source) {
+                source.deaths = Number(source.deaths ?? source.death ?? 0);
+                source.mt = source.mt ?? { value: 1, min: 0, max: 99 };
+                source.st = source.st ?? { value: 1, min: 0, max: 99 };
+                source.dt = source.dt ?? { value: 1, min: 0, max: 99 };
+            }
+
             return super.migrateData(source);
         } catch (e) {
             console.error("HypermallContractorData.migrateData error:", e);

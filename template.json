@@ -8,6 +8,9 @@
   "Item": {
     "types": [
       "equipment",
+      "mutation",
+      "psionic",
+      "background",
       "weapon"
     ]
   }

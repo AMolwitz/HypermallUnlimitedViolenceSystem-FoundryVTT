@@ -9,6 +9,10 @@ export class HypermallNPCData extends foundry.abstract.TypeDataModel {
             mt: resourceField(0, 99),
             st: resourceField(0, 99),
             dt: resourceField(0, 99),
+            // Add Contractor-style thresholds so NPCs also display/save Meat/Stress/Debt
+            meat: resourceField(0, 99),
+            stress: resourceField(0, 99),
+            debt: resourceField(0, 99),
             moves: new StringField(),
             phrenology: new StringField(),
             special: new StringField(),
@@ -17,4 +21,5 @@ export class HypermallNPCData extends foundry.abstract.TypeDataModel {
 
         }
     }
+
 }

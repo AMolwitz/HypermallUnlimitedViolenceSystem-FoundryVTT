@@ -58,9 +58,9 @@ export class HypermallContractorSheet extends HypermallActor {
     const textEditor = getCompatibleTextEditor()
 
     context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations)
-    context.enrichedGear = await textEditor.enrichHTML(context.system.gear)
+    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear)
     context.enrichedPassions = await textEditor.enrichHTML(context.system.passions)
-    context.enrichedPsionisPowers = await textEditor.enrichHTML(context.system.psionicPowers)
+    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics)
 
     // Prepare character data and items.
     if (actorData.type == 'contractor') {
@@ -152,6 +152,7 @@ export class HypermallContractorSheet extends HypermallActor {
       let attributeElement = event.delegateTarget;
       this.checkAttributeValue(attributeElement);
     });
+    // Persist resource inputs immediately
     html.find('.hypermall-meat-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
       const actorMeat = this.actor.system.meat;
@@ -167,7 +168,23 @@ export class HypermallContractorSheet extends HypermallActor {
       const actorDebt = this.actor.system.debt;
       this.validateThresholdChange(eventValue, event.target, actorDebt);
     });
-    html.on('click', '.gear-create', this._onCreateGear.bind(this));
+
+    // Also persist NPC-style MT/ST/DT thresholds when edited on Contractors
+    html.find('.hypermall-mt-indicator').change((event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorMt = this.actor.system.mt;
+      this.validateThresholdChange(eventValue, event.target, actorMt);
+    });
+    html.find('.hypermall-st-indicator').change((event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorSt = this.actor.system.st;
+      this.validateThresholdChange(eventValue, event.target, actorSt);
+    });
+    html.find('.hypermall-dt-indicator').change((event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorDt = this.actor.system.dt;
+      this.validateThresholdChange(eventValue, event.target, actorDt);
+    });
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
 
@@ -239,7 +256,7 @@ export class HypermallContractorSheet extends HypermallActor {
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-  if (!["gear", "mutation", "psionicPower"].includes(dropType)) return false;
+  if (!["gear", "mutation", "psionics"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;
@@ -297,6 +314,7 @@ export class HypermallContractorSheet extends HypermallActor {
     return super.activateEditor(name, options, initialContent);
   }
 
+  
   /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
@@ -311,9 +329,9 @@ export class HypermallContractorSheet extends HypermallActor {
         //const stressLevel = this.actor.system.stress.value;
         //let meatLevel = this.actor.system.meat.value;
         //let debtLevel = this.actor.system.debt.value;
-        let passionModifier = parseInt(this.gePassionModifierFromSheet(triggeringElement));
+        let passionsModifier = parseInt(this.getPassionsModifierFromSheet(triggeringElement));
 
-        let Die_Pool = this.calculatePool(triggeringElement, passiontModifier);
+        let Die_Pool = this.calculateDiePool(triggeringElement) + passionsModifier;
         let rollString = this.generateRollString(Die_Pool);
 
         let roll = await new Roll(rollString).evaluate();
@@ -322,7 +340,7 @@ export class HypermallContractorSheet extends HypermallActor {
           roll._formula = `${1}d6cs>=5`;
         }
 
-        await this.sendRollResults(roll, Die_Pool, passionModifier);
+        await this.sendRollResults(roll, Die_Pool, passionsModifier);
         break;
     }
 
@@ -334,43 +352,54 @@ export class HypermallContractorSheet extends HypermallActor {
     return `${1}d6cs>=5)`;
   }
 
-  async sendRollResults(roll, Die_Pool, passionModifier) {
-    if (NODE < 0) {
+  async sendRollResults(roll, Die_Pool, passionsModifier) {
+    let flavor = '';
+    if (Die_Pool < 0) {
       flavor += 'Rolled with negative die pool. The American Consumer Federation recommends against doing that.<br>';
     }
-    flavor += `Rolled with a ${passionModifier} passion modifier.`
+    flavor += `Rolled with a ${passionsModifier} passion modifier.`
 
     const message = await roll.toMessage({ flavor, speaker: ChatMessage.getSpeaker({ actor: this.actor }) });
     console.log(message);
   }
 
-  calculateDiePool(triggeringElement, passionModifier) {
+  calculateDiePool() {
     const rollData = this.actor.getRollData();
 
-    let Die_Pool = parseInt(this.getStatisticsDiePoolFromSheet(triggeringElement, rollData));
+    let Die_Pool = parseInt(this.getStatisticsDiePoolFromSheet(rollData));
 
-    Die_Pool += passionModifier;
-
+    return Die_Pool;
   }
 
-  getStatisticsDiePoolFromSheet(htmlElement, rollData) {
-    let stat = htmlElement.form[26].value.toLowerCase()
-    let skill = htmlElement.form[27].value
-    let statDiePool = parseInt(rollData.abilities[stat].value);
-    let skillDiePool;
+  getStatisticsDiePoolFromSheet(rollData) {
+    // Read selectors by id
+    const statSel = this.element.find('#hypermall-roll-stat').val() ?? '';
+    const skillSel = this.element.find('#hypermall-roll-skill').val() ?? '';
 
-    Object.values(rollData.abilities).forEach(ability => {
+    const stat = (String(statSel) || '').toLowerCase();
+    const skill = (String(skillSel) || '').toLowerCase();
 
-      if (ability.hasOwnProperty('skills') && ability.skills.hasOwnProperty(skill)) {
-        skillDiePool = parseInt(ability.skills[skill].value);
+    const statDiePool = parseInt(rollData.abilities?.[stat]?.value ?? 0);
+    let skillDiePool = parseInt(rollData.skills?.[skill]?.value ?? 0);
+
+    // Prefer top-level system.skills if available
+    if (rollData.skills && rollData.skills[skill] !== undefined) {
+      skillDiePool = Number(rollData.skills[skill].value ?? rollData.skills[skill] ?? 0);
+    } else {
+      // Fallback: search ability-level skills
+      for (const ability of Object.values(rollData.abilities ?? {})) {
+        if (ability?.skills && ability.skills[skill] !== undefined) {
+          skillDiePool = Number(ability.skills[skill].value ?? 0);
+          break;
+        }
       }
-    });
+    }
 
     return statDiePool + skillDiePool;
   }
 
-  getPassionsModifierFromSheet(htmlElement) {
-    return htmlElement.form[28].value;
+  getPassionsModifierFromSheet() {
+    return this.element.find('#hypermall-roll-passions').val() ?? '';
   }
 
   checkAttributeValue(sender) {
@@ -384,15 +413,35 @@ export class HypermallContractorSheet extends HypermallActor {
     }
   }
 
-  validateThresholdChange(eventValue, eventTarget, actorValue) {
-    if (isNaN(eventValue)) {
-      eventTarget.value = actorValue.value;
-    }
-    if (eventValue > actorValue.max) {
-      eventTarget.value = actorValue.max;
-    }
-    if (eventValue < actorValue.min) {
-      eventTarget.value = actorValue.min;
+  async validateThresholdChange(eventValue, eventTarget, actorValue) {
+    try {
+      // If actorValue schema is missing, keep the input as-is but don't attempt to persist.
+      if (!actorValue) return;
+
+      // NaN -> revert to current actor value
+      if (isNaN(eventValue)) {
+        eventTarget.value = actorValue.value ?? 0;
+        return;
+      }
+
+      const min = Number(actorValue.min ?? 0);
+      const max = Number(actorValue.max ?? eventValue);
+      const clamped = Math.max(min, Math.min(max, eventValue));
+
+      // Update the displayed value if it was adjusted
+      if (String(eventTarget.value) !== String(clamped)) eventTarget.value = clamped;
+
+      // Persist to the actor if it actually changed
+      const current = Number(actorValue.value ?? 0);
+      if (current !== Number(clamped)) {
+        const update = {};
+        update[eventTarget.name] = Number(clamped);
+        await this.actor.update(update);
+      }
+    } catch (err) {
+      console.error("validateThresholdChange error:", err);
     }
   }
+
 }
+

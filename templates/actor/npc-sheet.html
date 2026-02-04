@@ -24,6 +24,10 @@
           <div class="resource-content flexrow flex-center flex-between">
             <input type="number" name="system.meat.value" value="{{system.meat.value}}" data-dtype="Number" />
           </div>
+          <h3>/</h3>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input type="number" name="system.meat.max" value="{{system.meat.max}}" data-dtype="Number" />
+          </div>
         </div>
 
         <div class="resource flex-group-center">
@@ -73,10 +77,10 @@
       <div class="enriched content">{{{enrichedMoves}}}</div>
       
       <h3>Mutations</h3>
-      <div class="enriched content">{{{enrichedMutations}}}</div>
+      {{> "actor-mutations"}}
 
       <h3>Psionics</h3>
-      <div class="enriched content">{{{enrichedPsionics}}}</div>
+      {{> "actor-psionics"}}
     </div>
 
     <!-- Inventory Tab -->
