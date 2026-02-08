@@ -168,23 +168,15 @@ export class HypermallContractorSheet extends HypermallActor {
       const actorDebt = this.actor.system.debt;
       this.validateThresholdChange(eventValue, event.target, actorDebt);
     });
+    html.find('.hypermall-gorge-indicator').change((event) => {
+      const eventValue = parseInt(event.target.value);
+      const actorGorge = this.actor.system.derived?.gorge;
+      this.validateThresholdChange(eventValue, event.target, actorGorge);
+    });
 
-    // Also persist NPC-style MT/ST/DT thresholds when edited on Contractors
-    html.find('.hypermall-mt-indicator').change((event) => {
-      const eventValue = parseInt(event.target.value);
-      const actorMt = this.actor.system.mt;
-      this.validateThresholdChange(eventValue, event.target, actorMt);
-    });
-    html.find('.hypermall-st-indicator').change((event) => {
-      const eventValue = parseInt(event.target.value);
-      const actorSt = this.actor.system.st;
-      this.validateThresholdChange(eventValue, event.target, actorSt);
-    });
-    html.find('.hypermall-dt-indicator').change((event) => {
-      const eventValue = parseInt(event.target.value);
-      const actorDt = this.actor.system.dt;
-      this.validateThresholdChange(eventValue, event.target, actorDt);
-    });
+    // Gear management
+    html.find('.gear-create').click(this._onCreateGear.bind(this));
+
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
 

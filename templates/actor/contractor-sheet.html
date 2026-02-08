@@ -135,6 +135,18 @@
     {{!-- Holistic Wellness (Thresholds) Tab --}}
     <div class="tab hypermall-thresholds" data-group="primary" data-tab="thresholds">
       {{> "actor-thresholds"}}
+      <div class="wellness-stats">
+        <div class="wellness-stat">
+          <span class="wellness-label">Dodge:</span>
+          <span class="wellness-value">{{system.derived.dodge.value}}</span>
+        </div>
+        <div class="wellness-stat">
+          <span class="wellness-label">Gorges:</span>
+           <textarea class="hypermall-thresholds-input hypermall-gorge-indicator" name="system.derived.gorge.value"
+                data-dtype="Number">{{system.derived.gorge.value}}</textarea>
+          <span class="wellness-value">{{system.derived.gorge.value}}</span> / <span class="wellness-value">{{system.derived.gorge.max}}</span> 
+        </div>
+      </div>
     </div>
 
     {{!-- Mutations Tab --}}

@@ -1,4 +1,31 @@
 <section class="grid grid-4col">
+    <label class="hypermall-attribute-label">Physick</label>
+    <input type="text" name="data.stats.physick.value" value="{{system.stats.physick.value}}" data-type="Number"/>
+
+    <label class="hypermall-attribute-label">Craveability</label>
+    <input type="text" name="data.stats.craveability.value" value="{{system.stats.craveability.value}}" data-type="Number"/>
+
+    <label class="hypermall-attribute-label">Thinkitude</label>
+    <input type="text" name="data.stats.thinkitude.value" value="{{system.stats.thinkitude.value}}" data-type="Number"/>
+
+    <label class="hypermall-attribute-label">Savvy</label>
+    <input type="text" name="data.stats.savvy.value" value="{{system.stats.savvy.value}}" data-type="Number"/>
+
+    <ol class="stats-list">
+    {{#each actor.data.stats as |stats key|}}
+    <li class="attribute flexrow" data-attribute="{{key}}">
+        <span class="attribute-label flexrow" name="data.stats.{{key}}.label">{{label}}</span>
+        <div class="attribute-editbox flexrow">
+            <input class="attribute-value" type="text" name="data.stats.{{key}}.value" value="{{stats.value}}" data-dtype="Number"/>
+        </div>
+    </li>
+    {{/each}}
+    </ol>
+    <label class="hypermall-attribute-label">Gorge</label>
+    <input type="text" name="data.derived.gorge.value" value="{{system.derived.gorge.value}}" data-type="Number"/>
+    
+</section>
+<section class="grid grid-4col">
     {{#each system.abilities as |ability akey|}}
     {{#if ability.label}}
     <div class="ability flexcol flex-group-center hypermall-container">

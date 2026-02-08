@@ -19,30 +19,7 @@
           </div>
         </div>
 
-        <div class="resource flex-group-center">
-          <label for="system.meat" class="resource-label">Meat</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="number" name="system.meat.value" value="{{system.meat.value}}" data-dtype="Number" />
-          </div>
-          <h3>/</h3>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="number" name="system.meat.max" value="{{system.meat.max}}" data-dtype="Number" />
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="system.stress" class="resource-label">Stress</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="number" name="system.stress.value" value="{{system.stress.value}}" data-dtype="Number" />
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="system.debt" class="resource-label">Debt</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input type="number" name="system.debt.value" value="{{system.debt.value}}" data-dtype="Number" />
-          </div>
-        </div>
+        {{> "actor-thresholds"}}
 
       </div>
     </div>

@@ -1,17 +1,81 @@
 {
   "Actor": {
-    "types": [
-      "contractor",
-      "npc"
-    ]
+    "types": ["contractor", "npc"],
+    "templates": {
+      "common": {
+        "thresholds": {
+            "meat": {
+              "value": 0,
+              "min": 0,
+              "max": 10
+            },
+            "stress": {            
+              "value": 0,
+              "min": 0,
+              "max": 10},
+            "debt": {
+              "value": 0,
+              "min": 0,
+              "max": 10
+            }
+          }
+        },
+        "contractor": {
+          "stats": {
+            "physick": {
+              "value": 0,
+              "label": "Physick",
+              "modifier": []
+            },
+              "craveability": {
+              "value": 0,
+              "label": "Craveability",
+              "modifier": []
+            },
+              "thinkitude": {
+              "value": 0,
+              "label": "Thinkitude",
+              "modifier": []
+            },
+              "savvy": {
+              "value": 0,
+              "label": "Savvy",
+              "modifier": []
+            }
+          },
+          "derived": {
+            "gorge": {
+              "value": 0,
+              "label": "Gorge",
+              "max": 1
+            },
+            "dodge": {
+              "value": 0,
+              "label": "Dodge"
+            }
+        }
+      }
+    }
   },
   "Item": {
-    "types": [
-      "equipment",
-      "mutation",
-      "psionic",
-      "background",
-      "weapon"
-    ]
+    "types": ["equipment", "mutation", "psionic", "background", "weapon"],
+    "equipment": {
+      "description": "",
+      "tags": "",
+      "effects": ""
+    },
+    "mutation": {
+      "description": "",
+      "effects": ""
+    },
+    "psionic": {
+      "description": "",
+      "effects": ""
+    },
+    "background": {
+      "brandline": "",
+      "description": "",
+      "effects": ""
+    }
   }
 }

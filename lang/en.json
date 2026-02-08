@@ -2,6 +2,9 @@
   "TYPES.Actor.npc": "NPC",
   "TYPES.Actor.contractor": "Contractor",
   "TYPES.Item.equipment": "Equipment",
+  "Typers.Item.mutation": "Mutation",
+  "TYPES.Item.psionic": "Psionic",
+  "TYPES.Item.background": "Background",
   "HYPERMALL.DeleteConfirmTitle": "Delete {name}",
   "HYPERMALL.DeleteConfirmContent": "Are you sure you want to delete <strong>{name}</strong>? This cannot be undone."
 }

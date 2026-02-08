@@ -56,22 +56,22 @@ export class HypermallNPCSheet extends HypermallActor {
     super.activateListeners(html);
     if (!this.isEditable) return;
 
-    html.find('.hypermall-meat-indicator').change(async (event) => {
+    html.find('.hypermall-mt-indicator').change(async (event) => {
       const eventValue = parseInt(event.target.value);
       const actorValue = this.actor.system?.meat;
-      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.meat.value');
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.meat.max');
     });
 
     html.find('.hypermall-st-indicator').change(async (event) => {
       const eventValue = parseInt(event.target.value);
       const actorValue = this.actor.system?.st;
-      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.st.value');
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.stress.max');
     });
 
     html.find('.hypermall-dt-indicator').change(async (event) => {
       const eventValue = parseInt(event.target.value);
       const actorValue = this.actor.system?.dt;
-      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.dt.value');
+      await this._validateAndPersistThreshold(eventValue, event.target, actorValue, 'system.debt.max');
     });
   }
 

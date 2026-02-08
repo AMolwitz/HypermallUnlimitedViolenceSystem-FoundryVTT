@@ -4,10 +4,10 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
     static defineSchema() {
         const { SchemaField, NumberField, StringField } = foundry.data.fields;
         //const startingXP = game.settings.get(SystemSettingsKeys.SYSTEM, SystemSettingsKeys.STARTING_XP);
-
+        //const data = actorData.data;
         return {
-            meat: resourceField(0, 99), //how to set it when it's 2d6+3+physick?
-            debt: resourceField(0, 99), // how to set when it's custom from background?
+            meat: resourceField(0, 6), //how to set it when it's 2d6+3+physick?
+            debt: resourceField(0, 6), // how to set when it's custom from background?
             stress: resourceField(0, 6), // how to set when it's 6+savvy?
             background: new StringField(),
             iclTeam: new StringField(),
@@ -30,6 +30,17 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
                 savvy: new SchemaField({
                     label: new StringField({ initial: "Savvy" }),
                     value: new NumberField({ initial: 0 }),
+                })
+            }),
+            derived: new SchemaField({
+                gorge: new SchemaField({
+                    label: new StringField({ initial: "Gorge" }),
+                    value: new NumberField({ initial: 0 }),
+                    max: new NumberField({ initial: 0 })
+                }),
+                dodge: new SchemaField({
+                    label: new StringField({ initial: "Dodge" }),
+                    value: new NumberField({ initial: 0 })
                 })
             }),
             skills: new SchemaField({
@@ -84,30 +95,14 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
             style: new StringField({ initial: "" }),
             build: new StringField({ initial: "" }),
             deaths: new NumberField({ initial: 0 }),
-            mt: resourceField(0, 99),
-            st: resourceField(0, 99),
-            dt: resourceField(0, 99),
         }
     }
 
     static migrateData(source) {
         try {
-            // Ensure stress maximum is at least 6 + savvy (if available).
-            const savvy = source?.abilities?.savvy?.value ?? 0;
-            const s_t = source?.st?.value ?? 6 + Number(savvy);
-            if (source?.stress?.value.max < s_t) {
-                source.stress.max = s_t;
-            }
-            if (source?.stress?.value > s_t) {
-                source.stress.value = source.stress.max ?? s_t;
-            }
-
             // Defaulting for newly added fields
             if (source) {
                 source.deaths = Number(source.deaths ?? source.death ?? 0);
-                source.mt = source.mt ?? { value: 1, min: 0, max: 99 };
-                source.st = source.st ?? { value: 1, min: 0, max: 99 };
-                source.dt = source.dt ?? { value: 1, min: 0, max: 99 };
             }
 
             return super.migrateData(source);

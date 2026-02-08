@@ -41,7 +41,20 @@ export class HypermallActor extends Actor {
   /**
    * Prepare Character type specific data
    */
-  _prepareCharacterData(actorData) { }
+  _prepareCharacterData(actorData) {
+    if (this.type !== 'contractor') return;
+    
+    const systemData = actorData.system;
+    // Calculate gorge.max based on physick
+    if (systemData.derived && systemData.abilities?.physick) {
+      systemData.derived.gorge.max = systemData.abilities.physick.value;
+    }
+    
+    // Calculate dodge.value based on savvy*2
+    if (systemData.derived && systemData.abilities?.savvy) {
+      systemData.derived.dodge.value = systemData.abilities.savvy.value * 2;
+    }
+  }
 
   /**
    * Prepare NPC type specific data.

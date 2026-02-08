@@ -6,19 +6,12 @@ export class HypermallActor extends getCompatibleActorSheet() {
         const requiredInteger = { required: true, nullable: false, integer: true }
         const schema = {}
 
-        schema.mt = new fields.SchemaField({
-            current: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            max: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            }) 
-        schema.st = new fields.SchemaField({
-            current: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            max: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            }) 
-        schema.dt = new fields.SchemaField({
-            current: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            max: new fields.NumberField({ ...requiredInteger, initial: 1, min: 0 }),
-            }) 
-        return schema;   
+
+        return {            
+            meat: resourceField(0, 99), //how to set it when it's 2d6+3+physick?
+            debt: resourceField(0, 99), // how to set when it's custom from background?
+            stress: resourceField(0, 99), // how to set when it's 6+savvy?
+            };   
     }
     /** @override */
     get template() {
