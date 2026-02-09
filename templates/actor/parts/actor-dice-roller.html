@@ -24,19 +24,14 @@
 
         <div class="hypermall-roll-selector">
             <label class="resource-label hypermall-roll-label">Passion Modifier: </label>
-            <select id="hypermall-roll-passions" class="hypermall-roll-selector" data-dtype="Number">
-                <option value=0>-2</option>
-                <option value=1>-1</option>
-                <option value=2>0</option>
-                <option value=3>1</option>
-                <option value=4>2</option>
-                <option value=5>3</option>
-            </select>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <button type="button" class="hypermall-passion-decrement" style="width: 30px; height: 30px;">-1</button>
+                <input id="hypermall-roll-passions" type="number" value="0" style="width: 60px; text-align: center;" data-dtype="Number" />
+                <button type="button" class="hypermall-passion-increment" style="width: 30px; height: 30px;">+1</button>
+            </div>
         </div>
 
         <button id="hypermall-character-roller" class="rollable" type="button">Roll some dice!</button>
-
-        <h3>Die Pool</h3>
         
     </div>
 </section>

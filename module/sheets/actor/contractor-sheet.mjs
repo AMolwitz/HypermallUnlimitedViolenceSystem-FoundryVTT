@@ -106,21 +106,32 @@ export class HypermallContractorSheet extends HypermallActor {
   async _prepareItems(context) {
     // Initialize containers.
     const gear = [];
+    const mutations = [];
+    const psionics = [];
+    const backgrounds = [];
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
-      if (i.type !== 'equipment') continue;
-      if (i.system.type == undefined) continue;
       i.img = i.img || DEFAULT_TOKEN;
       i.enrichedDescription = await TextEditor.enrichHTML(i.system.description);
-      // Append to gear.
-      if (i.system.type === 'gear') {
+      
+      // Categorize by item type
+      if (i.type === 'equipment') {
         gear.push(i);
+      } else if (i.type === 'mutation') {
+        mutations.push(i);
+      } else if (i.type === 'psionic') {
+        psionics.push(i);
+      } else if (i.type === 'background') {
+        backgrounds.push(i);
       }
     }
 
     // Assign and return
     context.gear = gear;
+    context.mutations = mutations;
+    context.psionics = psionics;
+    context.backgrounds = backgrounds;
   }
 
   /* -------------------------------------------- */
@@ -146,6 +157,20 @@ export class HypermallContractorSheet extends HypermallActor {
 
     // Rollable abilities.
     html.find('.rollable').click(this._onRoll.bind(this));
+
+    // Passion modifier increment/decrement buttons
+    html.find('.hypermall-passion-increment').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-roll-passions');
+      const currentValue = parseInt(input.val()) || 0;
+      input.val(currentValue + 1);
+    });
+    html.find('.hypermall-passion-decrement').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-roll-passions');
+      const currentValue = parseInt(input.val()) || 0;
+      input.val(currentValue - 1);
+    });
 
     //Hypermall-Specific Listeners
     html.find('.hypermall-rolling-atribute').change((event) => {
@@ -181,7 +206,7 @@ export class HypermallContractorSheet extends HypermallActor {
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
 
     // --- Drag-and-Drop Hover Feedback ---
-    const dropZones = html.find('.gear-list-container[data-drop-type]');
+    const dropZones = html.find('[data-drop-type]');
 
     dropZones.on('dragenter', (event) => {
       // Prevent the event from bubbling up and causing other handlers to fire.
@@ -207,8 +232,8 @@ export class HypermallContractorSheet extends HypermallActor {
     const header = event.currentTarget;
     // Prepare the data for the new item using the modern data model.
     const itemData = {
-      name: "New Gear",
-      type: "gear",
+      name: "New Equipment",
+      type: "equipment",
     };
 
     // Create the item directly on the actor.
@@ -241,27 +266,26 @@ export class HypermallContractorSheet extends HypermallActor {
   async _onDropItem(event, data) {
     if (!this.isEditable) return false;
 
-    // Find the drop container to determine what kind of gear is being added.
+    // Find the drop container to determine what kind of item is being added.
     const dropContainer = event.target.closest("[data-drop-type]");
-    if (!dropContainer) return false;
+    if (!dropContainer) return super._onDropItem(event, data);
 
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-  if (!["gear", "mutation", "psionics"].includes(dropType)) return false;
+    if (!["equipment", "mutation", "psionic", "background"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;
 
-    // Validate that the dropped document is an 'equipment' item.
-    if (item.type !== "equipment") {
-      ui.notifications.warn("Only Equipment items can be added to this sheet.");
+    // Validate that the dropped document type matches the drop zone.
+    if (item.type !== dropType) {
+      ui.notifications.warn(`Only ${dropType} items can be added to this area.`);
       return false;
     }
 
-    // Prepare the item data, setting the subtype based on the drop location.
+    // Prepare the item data.
     const itemData = item.toObject();
-    itemData.system.type = dropType;
 
     // Create the new item on the actor.
     return this.actor.createEmbeddedDocuments("Item", [itemData]);

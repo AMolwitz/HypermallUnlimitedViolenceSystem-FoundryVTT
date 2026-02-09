@@ -4,7 +4,7 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 // Import sheet classes.
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
-import { HypermallEquipmentSheet } from "./sheets/equipment/equipment-sheet.mjs";
+import { HypermallEquipmentSheet } from "./sheets/equipment/gear-sheet.mjs";
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import {
   HypermallContractorData,

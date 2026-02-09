@@ -90,6 +90,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
             allGear: new StringField({ initial: "List any of the gear you're responsible for here. Be sure to keep it in tip-top shape!" }),
             mutations: new StringField({ initial: "Note your mutations." }),
             psionics: new StringField({ initial: "Note your psionic powers." }),
+            passions: new StringField({ initial: "Note your passions." }),
             height: new StringField({ initial: "" }),
             temperament: new StringField({ initial: "" }),
             style: new StringField({ initial: "" }),
