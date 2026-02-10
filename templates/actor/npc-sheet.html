@@ -29,7 +29,7 @@
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item" data-tab="description">Description</a>
     <a class="item" data-tab="actions">Actions</a>
-    <a class="item" data-tab="inventory">Inventory</a>
+    <a class="item" data-tab="gear">Gear</a>
     <a class="item" data-tab="foundry">Foundry Data</a>
   </nav>
 
@@ -38,20 +38,85 @@
 
     <!-- Description Tab -->
     <div class="tab hypermall-description" data-group="primary" data-tab="description">
-      <h3>Background</h3>
-      <div class="enriched content">{{{enrichedBackground}}}</div>
-
+      <div class="grid grid-2col">
+        <div>
+            <div class="hypermall-header">
+                <label>Background</label>
+            </div>
+            <div class="hypermall-editor-container">
+              {{editor
+              enrichedBackground
+              target="system.background"
+              button=true
+              engine="prosemirror"
+              editable=editable
+              collaborate=false}}
+            </div>
+        </div>
+      </div>
+      
       <h3>Phrenology</h3>
-      <div class="enriched content">{{{enrichedPhrenology}}}</div>
-
-      <h3>Quote</h3>
-      <div class="enriched content">{{{enrichedQuote}}}</div>
+      <table class="phrenology-table">
+        <tbody>
+          <tr>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'one')}}phrenology-active{{/if}}" data-phen-key="one">
+              <input type="text" name="system.phrenology.one" value="{{system.phrenology.one}}" placeholder="1" />
+            </td>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'two')}}phrenology-active{{/if}}" data-phen-key="two">
+              <input type="text" name="system.phrenology.two" value="{{system.phrenology.two}}" placeholder="2" />
+            </td>
+          </tr>
+          <tr>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'three')}}phrenology-active{{/if}}" data-phen-key="three">
+              <input type="text" name="system.phrenology.three" value="{{system.phrenology.three}}" placeholder="3" />
+            </td>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'four')}}phrenology-active{{/if}}" data-phen-key="four">
+              <input type="text" name="system.phrenology.four" value="{{system.phrenology.four}}" placeholder="4" />
+            </td>
+          </tr>
+          <tr>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'five')}}phrenology-active{{/if}}" data-phen-key="five">
+              <input type="text" name="system.phrenology.five" value="{{system.phrenology.five}}" placeholder="5" />
+            </td>
+            <td class="phrenology-cell {{#if (eq system.phrenology.active 'six')}}phrenology-active{{/if}}" data-phen-key="six">
+              <input type="text" name="system.phrenology.six" value="{{system.phrenology.six}}" placeholder="6" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="grid grid-2col">
+        <div>
+            <div class="hypermall-header">
+                <label>Quote</label>
+            </div>
+            <div class="hypermall-editor-container">
+              {{editor
+              enrichedQuote
+              target="system.quote"
+              button=true
+              engine="prosemirror"
+              editable=editable
+              collaborate=false}}
+            </div>
+        </div>
+      </div>
     </div>
 
     <!-- Actions Tab -->
     <div class="tab hypermall-actions" data-group="primary" data-tab="actions">
       <h3>Moves</h3>
-      <div class="enriched content">{{{enrichedMoves}}}</div>
+      <div class="moves-list">
+        {{#each system.moves as |move index|}}
+        <div class="move-input-group" data-index="{{index}}">
+          <label>{{add index 1}}.</label>
+          <input type="text" name="system.moves.{{index}}" value="{{move}}" class="move-input" />
+          <button type="button" class="remove-move" title="Remove Move"><i class="fas fa-trash"></i></button>
+        </div>
+        {{/each}}
+        {{#if (lt system.moves.length 6)}}
+        <button type="button" class="add-move"><i class="fas fa-plus"></i> Add Move</button>
+        {{/if}}
+      </div>
       
       <h3>Mutations</h3>
       {{> "actor-mutations"}}
@@ -60,12 +125,12 @@
       {{> "actor-psionics"}}
     </div>
 
-    <!-- Inventory Tab -->
-    <div class="tab hypermall-inventory" data-group="primary" data-tab="inventory">
+    <!-- Gear Tab -->
+    <div class="tab hypermall-gear" data-group="primary" data-tab="gear" data-drop-type="equipment">
       {{> "actor-gear-list"}}
-      <h3>Inventory Notes</h3>
-      <div class="enriched content">{{{enrichedInventory}}}</div>
     </div>
+
+    
 
     <!-- Foundry Tab -->
     <div class="tab hypermall-foundry" data-group="primary" data-tab="foundry">

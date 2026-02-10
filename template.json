@@ -54,6 +54,42 @@
               "label": "Dodge"
             }
         }
+      },
+      "npc": {
+        "background": {
+          "description": "",
+          "label": "Background"
+        },
+        "quote": {
+          "description": "",
+          "label": "Quote"
+        },
+        "phrenology": {
+          "one": {
+            "description": "",
+            "label": "Phrenology 1"
+          },
+          "two": {
+            "description": "",
+            "label": "Phrenology 2"
+          },
+          "three": {
+            "description": "",
+            "label": "Phrenology 3"
+          },
+          "four": {
+            "description": "",
+            "label": "Phrenology 4"
+          },
+          "five": {
+            "description": "",
+            "label": "Phrenology 5"
+          },
+          "six": {
+            "description": "",
+            "label": "Phrenology 6"
+          }
+        }
       }
     }
   },

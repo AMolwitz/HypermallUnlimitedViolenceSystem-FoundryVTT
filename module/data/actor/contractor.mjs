@@ -3,12 +3,11 @@ import { resourceField, skillField } from "../index.mjs";
 export class HypermallContractorData extends foundry.abstract.TypeDataModel {
     static defineSchema() {
         const { SchemaField, NumberField, StringField } = foundry.data.fields;
-        //const startingXP = game.settings.get(SystemSettingsKeys.SYSTEM, SystemSettingsKeys.STARTING_XP);
-        //const data = actorData.data;
+
         return {
-            meat: resourceField(0, 6), //how to set it when it's 2d6+3+physick?
-            debt: resourceField(0, 6), // how to set when it's custom from background?
-            stress: resourceField(0, 6), // how to set when it's 6+savvy?
+            meat: resourceField(0, 6), 
+            debt: resourceField(0, 6), 
+            stress: resourceField(0, 6),
             background: new StringField(),
             iclTeam: new StringField(),
             handedness: new StringField(),
@@ -24,7 +23,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
                     value: new NumberField({ initial: 0 }),
                 }),
                 thinkitude: new SchemaField({
-                    label: new StringField({ initial: "Thinkitutde" }),
+                    label: new StringField({ initial: "Thinkitude" }),
                     value: new NumberField({ initial: 0 }),
                 }),
                 savvy: new SchemaField({
@@ -87,7 +86,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
                 worship: skillField("Worship", 0),
                 zeroGCombat: skillField("Zero G Combat", 0)
             }),
-            allGear: new StringField({ initial: "List any of the gear you're responsible for here. Be sure to keep it in tip-top shape!" }),
+            allGear: new StringField({ initial: "List any gear." }),
             mutations: new StringField({ initial: "Note your mutations." }),
             psionics: new StringField({ initial: "Note your psionic powers." }),
             passions: new StringField({ initial: "Note your passions." }),

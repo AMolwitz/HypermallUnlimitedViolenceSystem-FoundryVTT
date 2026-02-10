@@ -45,6 +45,27 @@ Hooks.once('init', async function () {
   // Preload Handlebars partial templates so sheet partials are available
   await preloadHandlebarsTemplates();
 
+  // Register Handlebars helpers
+  Handlebars.registerHelper('array', function(...args) {
+    return args.slice(0, -1); // Remove the last arg (Handlebars context object)
+  });
+
+  Handlebars.registerHelper('add', function(a, b) {
+    return a + b;
+  });
+
+  Handlebars.registerHelper('eq', function(a, b) {
+    return a === b;
+  });
+
+  Handlebars.registerHelper('lt', function(a, b) {
+    return a < b;
+  });
+
+  Handlebars.registerHelper('lookup', function(obj, key) {
+    return obj?.[key];
+  });
+
   // Register sheet application classes
   actors.unregisterSheet("core", getCompatibleActorSheet());
   items.unregisterSheet("core", getCompatibleItemSheet());

@@ -8,9 +8,6 @@ export class HypermallActor extends getCompatibleActorSheet() {
 
 
         return {            
-            meat: resourceField(0, 99), //how to set it when it's 2d6+3+physick?
-            debt: resourceField(0, 99), // how to set when it's custom from background?
-            stress: resourceField(0, 99), // how to set when it's 6+savvy?
             };   
     }
     /** @override */
