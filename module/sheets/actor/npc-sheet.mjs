@@ -108,7 +108,7 @@ export class HypermallNPCSheet extends HypermallActor {
       i.enrichedDescription = await TextEditor.enrichHTML(i.system?.description || "");
       
       // Categorize by item type
-      if (i.type === 'equipment') {
+      if (i.type === 'gear') {
         gear.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
@@ -255,7 +255,7 @@ export class HypermallNPCSheet extends HypermallActor {
     // Prepare the data for the new item using the modern data model.
     const itemData = {
       name: "New Equipment",
-      type: "equipment",
+      type: "gear",
     };
 
     // Create the item directly on the actor.

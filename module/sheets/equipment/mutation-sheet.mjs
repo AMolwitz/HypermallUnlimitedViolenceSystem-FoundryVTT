@@ -22,8 +22,9 @@ export class HypermallMutationSheet extends getCompatibleItemSheet() {
         const itemData = this.item.toObject(false);
         data.system = itemData.system;
 
-        data.enrichedDescription = await TextEditor.enrichHTML(data.system.description);
-        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects);
+        data.enrichedDescription = await TextEditor.enrichHTML(data.system.description || "");
+        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects || "");
+        data.editable = this.isEditable;
 
         return data;
     }

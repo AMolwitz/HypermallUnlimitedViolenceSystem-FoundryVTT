@@ -119,7 +119,7 @@ export class HypermallContractorSheet extends HypermallActor {
       i.enrichedDescription = await TextEditor.enrichHTML(i.system.description || "");
       
       // Categorize by item type
-      if (i.type === 'equipment') {
+      if (i.type === 'gear') {
         gear.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
@@ -235,8 +235,8 @@ export class HypermallContractorSheet extends HypermallActor {
     const header = event.currentTarget;
     // Prepare the data for the new item using the modern data model.
     const itemData = {
-      name: "New Equipment",
-      type: "equipment",
+      name: "New Gear",
+      type: "gear",
     };
 
     // Create the item directly on the actor.
@@ -276,7 +276,7 @@ export class HypermallContractorSheet extends HypermallActor {
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-    if (!["equipment", "mutation", "psionic", "background"].includes(dropType)) return false;
+    if (!["gear", "mutation", "psionic", "background"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;

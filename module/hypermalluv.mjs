@@ -5,6 +5,7 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
 import { HypermallEquipmentSheet } from "./sheets/equipment/gear-sheet.mjs";
+import { HypermallMutationSheet } from "./sheets/equipment/mutation-sheet.mjs";
 import { HypermallPsionicSheet } from "./sheets/equipment/psionic-sheet.mjs";
 import { HypermallTagsSheet } from "./sheets/equipment/tags-sheet.mjs";
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
@@ -42,7 +43,7 @@ Hooks.once('init', async function () {
   });
 
   Object.assign(CONFIG.Item.dataModels, {
-    equipment: HypermallEquipmentData,
+    gear: HypermallEquipmentData,
     psionic: HypermallEquipmentData,
     mutation: HypermallEquipmentData,
     tags: HypermallTagsData
@@ -77,7 +78,8 @@ Hooks.once('init', async function () {
   items.unregisterSheet("core", getCompatibleItemSheet());
   actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
   actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
-  items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["gear"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallMutationSheet, { types: ["mutation"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallPsionicSheet, { types: ["psionic"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallTagsSheet, { types: ["tags"], makeDefault: true });
 
