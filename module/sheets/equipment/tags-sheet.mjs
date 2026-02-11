@@ -1,6 +1,6 @@
 import { getCompatibleItemSheet } from "../../utils/compatibility.mjs";
 
-export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
+export class HypermallTagsSheet extends getCompatibleItemSheet() {
     /** @override */
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -12,7 +12,7 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
 
     /** @override */
     get template() {
-        return `systems/hypermalluv/templates/equipment/gear-sheet.html`;
+        return `systems/hypermalluv/templates/equipment/tags-sheet.html`;
     }
 
     /** @override */
@@ -23,17 +23,8 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
         data.system = itemData.system;
 
         data.enrichedDescription = await TextEditor.enrichHTML(data.system.description || "");
-        data.enrichedTags = await TextEditor.enrichHTML(data.system.tags || "");
-        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects || "");
         data.editable = this.isEditable;
 
         return data;
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.find('input[name="system.price"]').blur(e => this.submit({ preventClose: true, preventRender: false }));
-        html.find('input[name="system.quantity"]').blur(e => this.submit({ preventClose: true, preventRender: false }));
     }
 }

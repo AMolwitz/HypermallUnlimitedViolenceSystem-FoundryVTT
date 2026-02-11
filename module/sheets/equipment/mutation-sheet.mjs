@@ -1,6 +1,6 @@
 import { getCompatibleItemSheet } from "../../utils/compatibility.mjs";
 
-export class HypermallPsionicSheet extends getCompatibleItemSheet() {
+export class HypermallMutationSheet extends getCompatibleItemSheet() {
     /** @override */
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
@@ -12,7 +12,7 @@ export class HypermallPsionicSheet extends getCompatibleItemSheet() {
 
     /** @override */
     get template() {
-        return `systems/hypermalluv/templates/equipment/psionic-sheet.html`;
+        return `systems/hypermalluv/templates/equipment/mutation-sheet.html`;
     }
 
     /** @override */
@@ -22,9 +22,8 @@ export class HypermallPsionicSheet extends getCompatibleItemSheet() {
         const itemData = this.item.toObject(false);
         data.system = itemData.system;
 
-        data.enrichedDescription = await TextEditor.enrichHTML(data.system.description || "");
-        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects || "");
-        data.editable = this.isEditable;
+        data.enrichedDescription = await TextEditor.enrichHTML(data.system.description);
+        data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects);
 
         return data;
     }

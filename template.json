@@ -94,8 +94,11 @@
     }
   },
   "Item": {
-    "types": ["equipment", "mutation", "psionic", "background", "weapon"],
-    "equipment": {
+    "types": ["gear", "mutation", "psionic", "background", "weapon", "tags"],
+    "gear": {
+      "price": 1,
+      "quantity": 1,
+      "brandline": "",
       "description": "",
       "tags": "",
       "effects": ""
@@ -112,6 +115,9 @@
       "brandline": "",
       "description": "",
       "effects": ""
+    },
+    "tags": {
+      "description": ""
     }
   }
 }

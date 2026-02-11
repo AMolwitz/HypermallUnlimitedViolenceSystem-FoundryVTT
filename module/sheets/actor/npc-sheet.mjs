@@ -104,7 +104,8 @@ export class HypermallNPCSheet extends HypermallActor {
     // Iterate through items, allocating to containers
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
-      i.enrichedDescription = await TextEditor.enrichHTML(i.system.description);
+      // Add defensive check for description
+      i.enrichedDescription = await TextEditor.enrichHTML(i.system?.description || "");
       
       // Categorize by item type
       if (i.type === 'equipment') {

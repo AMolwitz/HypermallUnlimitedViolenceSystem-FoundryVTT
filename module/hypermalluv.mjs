@@ -5,11 +5,14 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
 import { HypermallEquipmentSheet } from "./sheets/equipment/gear-sheet.mjs";
+import { HypermallPsionicSheet } from "./sheets/equipment/psionic-sheet.mjs";
+import { HypermallTagsSheet } from "./sheets/equipment/tags-sheet.mjs";
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import {
   HypermallContractorData,
   HypermallNPCData,
-  HypermallEquipmentData
+  HypermallEquipmentData,
+  HypermallTagsData
 } from "./data/index.mjs";
 import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActorSheet, getCompatibleItemSheet } from "./utils/compatibility.mjs";
 
@@ -39,7 +42,10 @@ Hooks.once('init', async function () {
   });
 
   Object.assign(CONFIG.Item.dataModels, {
-    equipment: HypermallEquipmentData
+    equipment: HypermallEquipmentData,
+    psionic: HypermallEquipmentData,
+    mutation: HypermallEquipmentData,
+    tags: HypermallTagsData
   });
 
   // Preload Handlebars partial templates so sheet partials are available
@@ -71,8 +77,9 @@ Hooks.once('init', async function () {
   items.unregisterSheet("core", getCompatibleItemSheet());
   actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
   actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
-  actors.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["equipment"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallPsionicSheet, { types: ["psionic"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallTagsSheet, { types: ["tags"], makeDefault: true });
 
   // Register settings
   game.settings.register("hypermalluv", "worldKey", {

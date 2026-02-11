@@ -22,19 +22,18 @@
     </div>
     {{/if}}
     {{/each}}
-
-    <!-- Render skills here -->
-    <section class="hypermall-skills-section">
-        <h4>Skills</h4>
-        <div class="grid grid-2col">
-            {{#each system.skills as |skill skey|}}
-            <div class="hypermall-attribute-container">
-                <label for="system.skills.{{skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left" data-label="{{skill.label}}">{{skill.label}}</label>
-                <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input" name="system.skills.{{skey}}.value" value="{{skill.value}}" data-dtype="Number" />
-            </div>
-            {{/each}}
+</section>
+<!-- Render skills here -->
+<section class="hypermall-skills-section">
+    <h4>Skills</h4>
+    <div class="grid grid-4col">
+        {{#each system.skills as |skill skey|}}
+        <div class="hypermall-attribute-container">
+            <label for="system.skills.{{skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left" data-label="{{skill.label}}">{{skill.label}}</label>
+            <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input" name="system.skills.{{skey}}.value" value="{{skill.value}}" data-dtype="Number" />
         </div>
-    </section>
+        {{/each}}
+    </div>
 </section>
 
 {{> "actor-dice-roller"}}

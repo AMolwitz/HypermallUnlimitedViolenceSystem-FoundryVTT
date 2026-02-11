@@ -57,10 +57,13 @@ export class HypermallContractorSheet extends HypermallActor {
 
     const textEditor = getCompatibleTextEditor()
 
-    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations)
-    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear)
-    context.enrichedPassions = await textEditor.enrichHTML(context.system.passions)
-    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics)
+    context.enrichedBackground = await textEditor.enrichHTML(context.system.background || "")
+    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations || "")
+    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear || "")
+    context.enrichedPassions = await textEditor.enrichHTML(context.system.passions || "")
+    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics || "")
+    
+    context.editable = this.isEditable;
 
     // Prepare character data and items.
     if (actorData.type == 'contractor') {
@@ -113,7 +116,7 @@ export class HypermallContractorSheet extends HypermallActor {
     // Iterate through items, allocating to containers
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
-      i.enrichedDescription = await TextEditor.enrichHTML(i.system.description);
+      i.enrichedDescription = await TextEditor.enrichHTML(i.system.description || "");
       
       // Categorize by item type
       if (i.type === 'equipment') {

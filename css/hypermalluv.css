@@ -323,7 +323,7 @@
   text-align: center;
 }
 .hypermall .hypermall-skill-label {
-  margin: 3px;
+  margin: 10px;
 }
 .hypermall .hypermall-rolling {
   margin: 4px;
@@ -443,6 +443,12 @@
 .hypermall .hypermall-editor-container > .editor.prosemirror {
   min-height: 150px;
   height: auto;
+}
+.hypermall .hypermall-item-info-container {
+  margin: 5px;
+  outline: 2px;
+  outline-style: groove;
+  padding: 10px;
 }
 .hypermall .hypermall {
   font-family: "Cutive Mono", monospace;

@@ -1,7 +1,8 @@
 <ol class="items-list">
     <li class='item flexrow items-header'>
         <div class='item-name'>{{localize 'Name'}}</div>
-        <div class="item-prop">{{localize 'Description'}}</div>
+        <div class="item-prop">{{localize 'MSRP'}}</div>
+        <div class="item-prop">{{localize 'Quantity'}}</div>
         <div class='item-controls'>
             <a class='item-control gear-create' title='Create New Equipment'>
                 <i class='fas fa-plus'></i>
@@ -17,7 +18,8 @@
             </div>
             <h4>{{item.name}}</h4>
         </div>
-        <div class="item-prop">{{{item.enrichedDescription}}}</div>
+        <div class="item-prop">{{item.system.price}}</div>
+        <div class="item-prop">{{item.system.quantity}}</div>
         <div class='item-controls'>
             <a class='item-control gear-edit' title='Edit'>
                 <i class='fas fa-edit'></i>
