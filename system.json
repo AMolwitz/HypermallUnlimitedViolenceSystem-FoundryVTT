@@ -29,6 +29,14 @@
       "flags": {}
     }
   ],
+  "packs": [
+    {
+      "name": "core-rolltables",
+      "label": "Core Rolltables",
+      "type": "RollTable",
+      "path": "packs/core-rolltables"
+    }
+  ],
   "primaryTokenAttribute": "meat",
   "secondaryTokenAttribute": "stress",
   "url": "https://github.com/AMolwitz/HypermallUnlimitedViolenceSystem-FoundryVTT",

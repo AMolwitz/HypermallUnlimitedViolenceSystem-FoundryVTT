@@ -104,6 +104,13 @@
 
     <!-- Actions Tab -->
     <div class="tab hypermall-actions" data-group="primary" data-tab="actions">
+      <h3>Damage</h3>
+      <div class="damage-line">
+        <input type="text" name="system.damage" value="{{system.damage}}" class="damage-input" />
+      </div>
+
+      {{> "actor-damage"}}
+
       <h3>Moves</h3>
       <div class="moves-list">
         {{#each system.moves as |move index|}}

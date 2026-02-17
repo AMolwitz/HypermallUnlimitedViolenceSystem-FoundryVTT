@@ -3,14 +3,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
   {{!-- Sheet Header --}}  <header class="sheet-header">
-    <div class="header-fields">
+    <div class="header-fields flexrow flex-between">
       {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
       use both the "grid" and "grid-Ncol" class where "N" can be any number
       from 1 to 12 and will create that number of columns. --}}
       <div class="hypermall-contractor-header">
         <h1>SLAUGHTR<sup>TM</sup> CONTRACTOR PROFILE</h1>
       </div>
-      <div class="resources grid grid-2col hypermall-container hypermall-profile">
+      <div class="hypermall-profile-img">
+        <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}'s ID photo" height="200" />
+      </div>
+    </div>
+    <div class="resources grid grid-2col hypermall-container hypermall-profile">
 
         {{!-- "flex-group-center" is also defined in the _grid.scss file
         and it will add a small amount of padding, a border, and will
@@ -45,6 +49,18 @@
         </div>
 
         <div class="resource flex-group-center">
+          <label for="system.fanLevel" class="resource-label">FAN LEVEL</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <select name="system.fanLevel" data-dtype="String" class="hypermall-fan-level-select">
+              <option value="">Select Fan-Level</option>
+              {{#each fanLevelDropdown}}
+                <option value="{{@key}}">{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+
+        <div class="resource flex-group-center">
           <label for="system.handedness" class="resource-label">HANDEDNESS</label>
           <div class="resource-content flexrow flex-center flex-between">
             <select name="system.handedness" data-dtype="String" class="hypermall-handedness-select">
@@ -73,10 +89,22 @@
         </div>
 
         <div class="resource flex-group-center">
+          <label for="system.sin" class="resource-label">SIN</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input type="text" name="system.sin"
+              value="{{system.sin}}" data-dtype="String" />
+          </div>
+        </div>
+
+        <div class="resource flex-group-center">
           <label for="system.temperament" class="resource-label">TEMPERAMENT</label>
           <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="system.temperament"
-              value="{{system.temperament}}" data-dtype="String" />
+            <select name="system.temperament" data-dtype="String" class="hypermall-temperament-select">
+              <option value="">Select Temperament</option>
+              {{#each temperamentDropdown}}
+                <option value="{{@key}}">{{this}}</option>
+              {{/each}}
+            </select>
           </div>
         </div>
 
@@ -109,6 +137,14 @@
           <div class="resource-content flexrow flex-center flex-between">
             <input type="number" name="system.deaths"
               value="{{system.deaths}}" data-dtype="Number" />
+          </div>
+        </div>
+
+        <div class="resource flex-group-center">
+          <label for="system.personalityTrait" class="resource-label">PERSONALITY TRAIT</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            <input type="text" name="system.personalityTrait"
+              value="{{system.personalityTrait}}" data-dtype="String" />
           </div>
         </div>
 
@@ -161,7 +197,15 @@
     </div>
 
     {{!-- Psionics Tab --}}
+
     <div class="tab hypermall-psionics" data-group="primary" data-tab="psionics" data-drop-type="psionic">
+      <div class="center" style="margin-bottom: 10px;">
+        <label class="resource-label">Power Uses: </label>
+        <textarea class="hypermall-thresholds-input hypermall-power-uses-indicator" name="system.powerUses.value"
+            data-dtype="Number" style="width: 40px; height: 30px; text-align: center;">{{system.powerUses.value}}</textarea>
+        <span> / </span>
+        <span class="hypermall-thresholds-max">{{system.powerUses.max}}</span>
+      </div>
       {{> "actor-psionics"}}
     </div>
 
@@ -173,12 +217,11 @@
     {{!-- Gear Tab --}}
     <div class="tab hypermall-gear" data-group="primary" data-tab="gear" data-drop-type="gear">
       {{> "actor-gear-list"}}
+    </div>
 
     {{!-- Foundry Information --}}
     <div class="tab hypermall-foundry" data-group="primary" data-tab="foundry">
       {{> "actor-foundry-data"}}
-    </div>
-
     </div>
 
 

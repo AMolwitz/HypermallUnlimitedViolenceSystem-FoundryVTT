@@ -1,0 +1,23 @@
+<section class="grid grid-4col">
+  <div class="damage-dice flexcol flex-group-center hypermall-container" style="margin-bottom: 15px;">
+    <label class="resource-label">Damage Dice: </label>
+    <div style="display: flex; align-items: center; gap: 5px;">
+      <button type="button" class="hypermall-damage-dice-decrement" style="width: 30px; height: 30px;">-1</button>
+      <input id="hypermall-damage-dice" type="number" value="{{system.damageDice}}" min="1" style="width: 60px; text-align: center;" data-dtype="Number" />
+      <button type="button" class="hypermall-damage-dice-increment" style="width: 30px; height: 30px;">+1</button>
+    </div>
+  </div>
+
+  <div class="damage-modifier flexcol flex-group-center hypermall-container" style="margin-bottom: 15px;">
+    <label class="resource-label">Damage Modifier: </label>
+    <div style="display: flex; align-items: center; gap: 5px;">
+      <button type="button" class="hypermall-damage-modifier-decrement" style="width: 30px; height: 30px;">-1</button>
+      <input id="hypermall-damage-modifier" type="number" value="{{system.damageModifier}}" style="width: 60px; text-align: center;" data-dtype="Number" />
+      <button type="button" class="hypermall-damage-modifier-increment" style="width: 30px; height: 30px;">+1</button>
+    </div>
+  </div>
+
+  <button type="button" id="hypermall-damage-roller" class="rollable" style="margin-bottom: 15px;">Roll Damage</button>
+
+  <button type="button" class="hypermall-hit-location rollable" style="margin-bottom: 15px;">Roll Hit Location</button>
+</section>

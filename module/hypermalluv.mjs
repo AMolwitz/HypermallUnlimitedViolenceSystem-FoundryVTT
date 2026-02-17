@@ -31,6 +31,32 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
 /* -------------------------------------------- */
 export const socketEventChannel = "system.hypermalluv";
 
+async function seedCoreRolltablesFromCompendium() {
+  const packId = "hypermalluv.core-rolltables";
+  const pack = game.packs.get(packId)
+    ?? game.packs.find((collection) => (
+      collection.metadata?.packageName === "hypermalluv"
+      && collection.metadata?.name === "core-rolltables"
+    ));
+
+  if (!pack) {
+    const availablePacks = Array.from(game.packs.keys()).join(", ");
+    console.error(`hypermalluv | Could not find compendium pack ${packId}. Available packs: ${availablePacks}`);
+    return false;
+  }
+
+  const documents = await pack.getDocuments();
+
+  for (const document of documents) {
+    const existing = game.tables.getName(document.name);
+    if (existing) continue;
+
+    await RollTable.create(document.toObject(), { renderSheet: false });
+  }
+
+  return true;
+}
+
 Hooks.once('init', async function () {
 
   // Define custom Document classes
@@ -92,6 +118,14 @@ Hooks.once('init', async function () {
     default: "",
   });
 
+  game.settings.register("hypermalluv", "coreRolltablesSeeded", {
+    name: "Core rolltables seeded",
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false,
+  });
+
 });
 
 /* -------------------------------------------- */
@@ -100,6 +134,14 @@ Hooks.once('init', async function () {
 
 Hooks.once("ready", async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
+
+  if (game.user.isGM && !game.settings.get("hypermalluv", "coreRolltablesSeeded")) {
+    const seeded = await seedCoreRolltablesFromCompendium();
+    if (seeded) {
+      await game.settings.set("hypermalluv", "coreRolltablesSeeded", true);
+      ui.notifications.info("HypermallUV: Core rolltables imported to this world.");
+    }
+  }
 
 
   // Style items when dragging from the sidebar.

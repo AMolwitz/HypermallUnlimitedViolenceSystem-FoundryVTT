@@ -3,6 +3,7 @@
     "types": ["contractor", "npc"],
     "templates": {
       "common": {
+        "armour": 0,
         "thresholds": {
             "meat": {
               "value": 0,
@@ -104,6 +105,7 @@
       "effects": ""
     },
     "mutation": {
+      "rank": 1,
       "description": "",
       "effects": ""
     },

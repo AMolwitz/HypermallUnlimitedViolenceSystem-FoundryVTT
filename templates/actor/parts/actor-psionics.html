@@ -1,4 +1,21 @@
 <section>
+    <label class="hypermall-header">THINKITUDE + 1, 2, or 3 MEAT DAMAGE.</label>
+
+    <div class="ability flexcol flex-group-center hypermall-container hypermall-rolling">
+        <span>Psionic Roller</span>
+
+        <div class="hypermall-roll-selector">
+            <label class="resource-label hypermall-roll-label">Meat Damage Modifier: </label>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <button type="button" class="hypermall-meat-modifier-decrement" style="width: 30px; height: 30px;">-1</button>
+                <input id="hypermall-roll-meat-modifier" type="number" value="1" min="1" max="3" style="width: 60px; text-align: center;" data-dtype="Number" />
+                <button type="button" class="hypermall-meat-modifier-increment" style="width: 30px; height: 30px;">+1</button>
+            </div>
+        </div>
+
+        <button id="hypermall-psionics-roller" class="rollable" type="button">Roll Psionics</button>
+    </div>
+
     <div class="grid grid-2col">
         <div>
             <div class="hypermall-header">

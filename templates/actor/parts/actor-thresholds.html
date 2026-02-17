@@ -1,4 +1,11 @@
-<section class="grid grid-3col">
+<section class="grid grid-4col actor-thresholds-outline">
+
+    <div class="center grid grid-1col">
+        <br />
+        <label class="resource-label center-align">Current</label>
+        <br />
+        <label class="resource-label center-align">Total</label>
+    </div>
 
     <section class="hypermall-container">
         <div class="hypermall-header">
@@ -7,9 +14,9 @@
 
         <div id="hypermall-meat" class="center grid grid-1col">
             <textarea class="hypermall-thresholds-input hypermall-meat-indicator" name="system.meat.value"
-                data-dtype="Number">{{system.meat.value}}</textarea> /
+                data-dtype="Number">{{system.meat.value}}</textarea>
             <textarea class="hypermall-thresholds-max hypermall-mt-indicator" name="system.meat.max"
-                data-dtype="Number">{{system.meat.max}}</textarea>         
+                data-dtype="Number">{{system.meat.max}}</textarea>
         </div>
 
     </section>
@@ -22,7 +29,7 @@
 
         <div id="hypermall-stress" class="grid grid-1col">
             <textarea class="hypermall-thresholds-input hypermall-stress-indicator" name="system.stress.value"
-                data-dtype="Number">{{system.stress.value}}</textarea> /
+                data-dtype="Number">{{system.stress.value}}</textarea>
             <textarea class="hypermall-thresholds-max hypermall-st-indicator" name="system.stress.max"
                 data-dtype="Number">{{system.stress.max}}</textarea>      
         </div>
@@ -30,14 +37,31 @@
     <section class=" hypermall-container">
 
         <div class="hypermall-header">
-            <label class="resource-label center-align" for="hypermall-debter">Debt</label>
+            <label class="resource-label center-align" for="hypermall-debter" {{#if debtIsNegative}}style="color: black;"{{/if}}>Debt</label>
         </div>
 
         <div id="hypermall-debt" class="grid grid-1col">
             <textarea class="hypermall-thresholds-input hypermall-debt-indicator" name="system.debt.value"
-                data-dtype="Number">{{system.debt.value}}</textarea> /
+                data-dtype="Number">{{system.debt.value}}</textarea>
             <textarea class="hypermall-thresholds-max hypermall-dt-indicator" name="system.debt.max"
-                data-dtype="Number">{{system.debt.max}}</textarea>      
+                data-dtype="Number">{{system.debt.max}}</textarea>
         </div>
+        {{#if showLoanDefault}}
+        <div class="center">
+            <label class="resource-label">Loan Default: {{LoanDefault}}</label>
+        </div>
+        {{/if}}
     </section>
+    <div class="center">
+        <label class="resource-label center-align" for="system.armour">Armour</label>
+        <input type="number" name="system.armour" value="{{system.armour}}" data-dtype="Number" />
+    </div>
+    <div class="center">
+        <button type="button" class="hypermall-hit-location">Hit Location</button>
+    </div>
+    {{#if system.derived.dodge}}
+    <div class="center">
+        <button type="button" class="hypermall-dodge-roll">Dodge Roll</button>
+    </div>
+    {{/if}}
 </section>

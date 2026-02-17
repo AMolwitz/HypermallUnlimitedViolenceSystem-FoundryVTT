@@ -6,13 +6,26 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
 
         return {
             meat: resourceField(0, 6), 
-            debt: resourceField(0, 6), 
+            debt: new SchemaField({
+              value: new NumberField({ initial: 0 }),
+              max: new NumberField({ initial: 6 }),
+            }),
             stress: resourceField(0, 6),
-            background: new StringField(),
+            powerUses: resourceField(0, 1),
+            armour: new NumberField({ initial: 0 }),
+            damageDice: new NumberField({ initial: 0 }),            damageModifier: new NumberField({ initial: 0 }),            background: new StringField(),
             iclTeam: new StringField(),
+            fanLevel: new StringField(),
             handedness: new StringField(),
             pronouns: new StringField(),
             zodiac: new StringField(),
+            sin: new StringField(),
+            temperament: new StringField(),
+            style: new StringField({ initial: "" }),
+            build: new StringField({ initial: "" }),
+            height: new StringField({ initial: "" }),
+            deaths: new NumberField({ initial: 0 }),
+            personalityTrait: new StringField({ initial: "" }),
             abilities: new SchemaField({
                 physick: new SchemaField({
                     label: new StringField({ initial: "Physick" }),
@@ -44,6 +57,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
             }),
             skills: new SchemaField({
                 asskissing: skillField("Asskissing", 0),
+                astralNavigation: skillField("Astral Navigation", 0),
                 awareness: skillField("Awareness", 0),
                 axe: skillField("Axe", 0),
                 bash: skillField("Bash", 0),
@@ -86,15 +100,10 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
                 worship: skillField("Worship", 0),
                 zeroGCombat: skillField("Zero G Combat", 0)
             }),
-            allGear: new StringField({ initial: "List any gear." }),
             mutations: new StringField({ initial: "Note your mutations." }),
             psionics: new StringField({ initial: "Note your psionic powers." }),
             passions: new StringField({ initial: "Note your passions." }),
-            height: new StringField({ initial: "" }),
-            temperament: new StringField({ initial: "" }),
-            style: new StringField({ initial: "" }),
-            build: new StringField({ initial: "" }),
-            deaths: new NumberField({ initial: 0 }),
+            special: new StringField({ initial: "" }),
         }
     }
 

@@ -9,6 +9,7 @@ export const preloadHandlebarsTemplates = async function () {
     "actor-competencies": "systems/hypermalluv/templates/actor/parts/actor-competencies.html",
     "actor-thresholds": "systems/hypermalluv/templates/actor/parts/actor-thresholds.html",
     "actor-dice-roller": "systems/hypermalluv/templates/actor/parts/actor-dice-roller.html",
+    "actor-damage": "systems/hypermalluv/templates/actor/parts/actor-damage.html",
     "actor-mutations": "systems/hypermalluv/templates/actor/parts/actor-mutations.html",
     "actor-psionics": "systems/hypermalluv/templates/actor/parts/actor-psionics.html",
     "actor-passions": "systems/hypermalluv/templates/actor/parts/actor-passions.html",

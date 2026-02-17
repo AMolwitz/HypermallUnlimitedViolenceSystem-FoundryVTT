@@ -43,6 +43,19 @@ export class HypermallNPCSheet extends HypermallActor {
 
     context.system = actorData.system;
     
+    // Check if debt value is negative for conditional styling
+    context.debtIsNegative = context.system.debt.value < 0;
+    
+    // Calculate Loan Default (next highest multiple if over max)
+    const debtValue = context.system.debt.value;
+    const debtMax = context.system.debt.max;
+    context.showLoanDefault = debtValue > debtMax;
+    if (debtValue > debtMax && debtMax > 0) {
+      context.LoanDefault = Math.ceil(debtValue / debtMax) * debtMax;
+    } else {
+      context.LoanDefault = debtMax;
+    }
+    
     const textEditor = getCompatibleTextEditor()
 
     context.enrichedBackground = await textEditor.enrichHTML(context.system.background)
@@ -132,17 +145,65 @@ export class HypermallNPCSheet extends HypermallActor {
     html.find('.hypermall-meat-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
       const actorMeat = this.actor.system.meat;
-      this.validateThresholdChange(eventValue, event.target, actorMeat);
+      this.validateThresholdChange(eventValue, event.target, actorMeat, actorMeat.min);
     });
     html.find('.hypermall-stress-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
       const actorStress = this.actor.system.stress;
-      this.validateThresholdChange(eventValue, event.target, actorStress);
+      this.validateThresholdChange(eventValue, event.target, actorStress, actorStress.min);
     });
     html.find('.hypermall-debt-indicator').change((event) => {
       const eventValue = parseInt(event.target.value);
       const actorDebt = this.actor.system.debt;
-      this.validateThresholdChange(eventValue, event.target, actorDebt);
+      this.validateThresholdChange(eventValue, event.target, actorDebt, null, Infinity);
+    });
+
+    // Meat damage modifier increment/decrement buttons
+    html.find('.hypermall-meat-modifier-increment').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-roll-meat-modifier');
+      const currentValue = parseInt(input.val()) || 1;
+      input.val(Math.min(currentValue + 1, 3));
+    });
+    html.find('.hypermall-meat-modifier-decrement').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-roll-meat-modifier');
+      const currentValue = parseInt(input.val()) || 1;
+      input.val(Math.max(currentValue - 1, 1));
+    });
+
+    // Psionic roller
+    html.find('#hypermall-psionics-roller').click(this._onRoll.bind(this));
+
+    // Damage roller
+    html.find('#hypermall-damage-roller').click(this._onRoll.bind(this));
+
+    // Damage dice increment/decrement buttons
+    html.find('.hypermall-damage-dice-increment').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-damage-dice');
+      const currentValue = parseInt(input.val()) || 1;
+      input.val(Math.max(currentValue + 1, 1));
+    });
+    html.find('.hypermall-damage-dice-decrement').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-damage-dice');
+      const currentValue = parseInt(input.val()) || 1;
+      input.val(Math.max(currentValue - 1, 1));
+    });
+
+    // Damage modifier increment/decrement buttons
+    html.find('.hypermall-damage-modifier-increment').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-damage-modifier');
+      const currentValue = parseInt(input.val()) || 0;
+      input.val(currentValue + 1);
+    });
+    html.find('.hypermall-damage-modifier-decrement').click((event) => {
+      event.preventDefault();
+      const input = this.element.find('#hypermall-damage-modifier');
+      const currentValue = parseInt(input.val()) || 0;
+      input.val(currentValue - 1);
     });
 
     // Handle adding moves
@@ -196,6 +257,8 @@ export class HypermallNPCSheet extends HypermallActor {
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
 
+    html.find('.hypermall-hit-location').click(this._onRollHitLocation.bind(this));
+
     // --- Drag-and-Drop Hover Feedback ---
     const dropZones = html.find('[data-drop-type]');
 
@@ -219,7 +282,7 @@ export class HypermallNPCSheet extends HypermallActor {
   }
 
 
-  async validateThresholdChange(eventValue, eventTarget, actorValue) {
+  async validateThresholdChange(eventValue, eventTarget, actorValue, minimum = 0, maximum = null) {
     try {
       // If actorValue schema is missing, keep the input as-is but don't attempt to persist.
       if (!actorValue) return;
@@ -230,8 +293,8 @@ export class HypermallNPCSheet extends HypermallActor {
         return;
       }
 
-      const min = Number(actorValue.min ?? 0);
-      const max = Number(actorValue.max ?? eventValue);
+      const min = minimum !== null ? Number(minimum) : Number(actorValue.min ?? -Infinity);
+      const max = maximum !== null ? Number(maximum) : Number(actorValue.max ?? eventValue);
       const clamped = Math.max(min, Math.min(max, eventValue));
 
       // Update the displayed value if it was adjusted
@@ -254,7 +317,7 @@ export class HypermallNPCSheet extends HypermallActor {
     const header = event.currentTarget;
     // Prepare the data for the new item using the modern data model.
     const itemData = {
-      name: "New Equipment",
+      name: "New Gear",
       type: "gear",
     };
 
@@ -299,6 +362,101 @@ export class HypermallNPCSheet extends HypermallActor {
       })
     };
     return super.activateEditor(name, options, initialContent);
+  }
+
+  async _onRoll(event) {
+    event.preventDefault();
+    const triggeringElement = event.currentTarget;
+
+    if (triggeringElement.id === 'hypermall-psionics-roller') {
+      let meatModifier = parseInt(this.getMeatModifierFromSheet(triggeringElement));
+      let thinkitudeDiePool = this.actor.system.abilities?.thinkitude?.value ?? 0;
+      let psiDiePool = thinkitudeDiePool + meatModifier;
+      let psiRollString = this.generateRollString(psiDiePool);
+
+      let psiRoll = await new Roll(psiRollString).evaluate();
+      if (psiDiePool < 0) {
+        psiRoll._formula = `${1}d6cs>=5`;
+      }
+
+      await this.sendPsionicRollResults(psiRoll, psiDiePool, meatModifier);
+      
+      // Add meat damage modifier to meat.value
+      const currentMeat = this.actor.system.meat.value;
+      const meatMax = this.actor.system.meat.max;
+      const newMeatValue = currentMeat + meatModifier;
+      
+      // Check for thresholds and post warnings
+      let finalMeatValue = newMeatValue;
+      if (newMeatValue >= meatMax) {
+        if (newMeatValue === meatMax) {
+          // Suicide by Psionics: apply damage normally
+          const content = '<div style="color: red; font-weight: bold;">Suicide by Psionics</div>';
+          await ChatMessage.create({
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: content
+          });
+        } else {
+          // Insufficient Meat: do not update meat value
+          finalMeatValue = currentMeat;
+          const content = '<div style="color: orange; font-weight: bold;">Insufficient Meat</div>';
+          await ChatMessage.create({
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+            content: content
+          });
+        }
+      }
+      
+      await this.actor.update({ 'system.meat.value': finalMeatValue });
+    } else if (triggeringElement.id === 'hypermall-damage-roller') {
+      let damageDice = parseInt(this.element.find('#hypermall-damage-dice').val()) || 1;
+      let damageModifier = parseInt(this.element.find('#hypermall-damage-modifier').val()) || 0;
+      
+      let damageRollString = `${damageDice}d6`;
+      if (damageModifier !== 0) {
+        damageRollString += damageModifier > 0 ? ` + ${damageModifier}` : ` - ${Math.abs(damageModifier)}`;
+      }
+      
+      let damageRoll = await new Roll(damageRollString).evaluate();
+      await this.sendDamageRollResults(damageRoll, damageDice, damageModifier);
+    }
+  }
+
+  generateRollString(Die_Pool) {
+    if (Die_Pool > 0) return `${Math.abs(Die_Pool)}d6cs>=5`;
+    return `${1}d6cs>=5`;
+  }
+
+  getMeatModifierFromSheet() {
+    return this.element.find('#hypermall-roll-meat-modifier').val() ?? '';
+  }
+
+  async sendPsionicRollResults(roll, Die_Pool, meatModifier) {
+    let flavor = '';
+    if (Die_Pool < 0) {
+      flavor += 'Rolled with negative die pool. The American Consumer Federation recommends against doing that.<br>';
+    }
+    flavor += `Rolled Psionics with a ${meatModifier} meat damage modifier.`
+
+    const chatMessage = await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: flavor
+    });
+    return chatMessage;
+  }
+
+  async sendDamageRollResults(roll, damageDice, damageModifier) {
+    let flavor = `Rolled ${damageDice}d6`;
+    if (damageModifier !== 0) {
+      flavor += damageModifier > 0 ? ` + ${damageModifier}` : ` - ${Math.abs(damageModifier)}`;
+    }
+    flavor += ' for damage.';
+
+    const chatMessage = await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: flavor
+    });
+    return chatMessage;
   }
 
 }
