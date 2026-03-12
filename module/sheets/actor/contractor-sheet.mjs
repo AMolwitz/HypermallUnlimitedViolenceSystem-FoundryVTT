@@ -164,6 +164,7 @@ export class HypermallContractorSheet extends HypermallActor {
       
       // Categorize by item type
       if (i.type === 'gear') {
+        i.system.carryType = i.system.carryType || 'stowed';
         gear.push(i);
       } else if (i.type === 'effect') {
         effects.push(i);
@@ -312,6 +313,7 @@ export class HypermallContractorSheet extends HypermallActor {
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
+    html.on('change', '.gear-carry-type', this._onChangeCarryType.bind(this));
     html.on('click', '.effect-edit', this._onItemEdit.bind(this));
     html.on('click', '.effect-delete', this._onItemDelete.bind(this));
 
@@ -408,7 +410,32 @@ export class HypermallContractorSheet extends HypermallActor {
     const itemData = item.toObject();
 
     // Create the new item on the actor.
-    return this.actor.createEmbeddedDocuments("Item", [itemData]);
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+    if (dropType === "gear" && createdItems.length) {
+      await this._createLinkedEffectsForGear(createdItems[0]);
+    }
+
+    return createdItems;
+  }
+
+  async _onChangeCarryType(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const select = event.target?.closest?.("select.gear-carry-type");
+    if (!select) return;
+
+    const itemId = select.dataset.itemId ?? select.closest(".item")?.dataset.itemId;
+    if (!itemId) return;
+
+    const carryType = String(select.value ?? "").trim();
+    if (!carryType.length) return;
+
+    await this.actor.updateEmbeddedDocuments("Item", [{
+      _id: itemId,
+      "system.carryType": carryType
+    }]);
   }
 
   _onItemEdit(event) {
@@ -432,7 +459,7 @@ export class HypermallContractorSheet extends HypermallActor {
     });
 
     if (confirmed) {
-      return item.delete();
+      return this._deleteItemAndLinkedEffects(item);
     }
   }
 

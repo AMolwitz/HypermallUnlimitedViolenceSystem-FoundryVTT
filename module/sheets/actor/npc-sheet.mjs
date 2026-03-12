@@ -347,6 +347,41 @@ export class HypermallNPCSheet extends HypermallActor {
     return Item.create(itemData, { parent: this.actor });
   }
 
+  /**
+ * Handle dropping an Item data object onto the Actor Sheet.
+ * @param {DragEvent} event   The concluding DragEvent which contains drop data
+ * @param {object} data       The data object extracted from the event
+ * @returns {Promise<Item[]|boolean>}
+ * @override
+ */
+  async _onDropItem(event, data) {
+    if (!this.isEditable) return false;
+
+    const dropContainer = event.target.closest("[data-drop-type]");
+    if (!dropContainer) return super._onDropItem(event, data);
+
+    const dropType = dropContainer.dataset.dropType;
+
+    if (!["gear", "effect", "mutation", "psionic", "background"].includes(dropType)) return false;
+
+    const item = await Item.fromDropData(data);
+    if (!item) return false;
+
+    if (item.type !== dropType) {
+      ui.notifications.warn(`Only ${dropType} items can be added to this area.`);
+      return false;
+    }
+
+    const itemData = item.toObject();
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+    if (dropType === "gear" && createdItems.length) {
+      await this._createLinkedEffectsForGear(createdItems[0]);
+    }
+
+    return createdItems;
+  }
+
   _onItemEdit(event) {
     event.preventDefault();
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
@@ -368,7 +403,7 @@ export class HypermallNPCSheet extends HypermallActor {
     });
 
     if (confirmed) {
-      return item.delete();
+      return this._deleteItemAndLinkedEffects(item);
     }
   }
 

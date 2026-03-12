@@ -26,6 +26,88 @@ export class HypermallActor extends getCompatibleActorSheet() {
         return data;
     }
 
+    _extractLinkedEffectNamesFromGear(gearItem) {
+        if (!gearItem || gearItem.type !== "gear") return [];
+
+        const rawEffects = gearItem.system?.effects;
+        if (typeof rawEffects !== "string" || !rawEffects.trim().length) return [];
+
+        const uuidRegex = /@UUID\[[^\]]+\]\{([^}]+)\}/g;
+        const uuidNames = Array.from(rawEffects.matchAll(uuidRegex))
+            .map((match) => match[1]?.trim())
+            .filter(Boolean);
+
+        const plainText = rawEffects
+            .replace(uuidRegex, "$1")
+            .replace(/<br\s*\/?\s*>/gi, "\n")
+            .replace(/<\/p>/gi, "\n")
+            .replace(/<[^>]+>/g, " ");
+
+        const textNames = plainText
+            .split(/[\n,;]+/)
+            .map((name) => name.trim().replace(/^[*-]\s*/, ""))
+            .filter(Boolean);
+
+        return [...new Set([...uuidNames, ...textNames])];
+    }
+
+    _getLinkedEffectIdsForGear(gearId) {
+        return this.actor.items
+            .filter((item) => item.type === "effect" && item.getFlag("hypermalluv", "linkedGearId") === gearId)
+            .map((item) => item.id);
+    }
+
+    async _createLinkedEffectsForGear(gearItem) {
+        const effectNames = this._extractLinkedEffectNamesFromGear(gearItem);
+        if (!effectNames.length) return [];
+
+        const existingLinkedEffects = this.actor.items.filter((item) => (
+            item.type === "effect"
+            && item.getFlag("hypermalluv", "linkedGearId") === gearItem.id
+        ));
+        const existingLinkedNames = new Set(existingLinkedEffects.map((item) => (
+            item.getFlag("hypermalluv", "sourceEffectName") || item.name
+        )));
+
+        const toCreate = [];
+
+        for (const effectName of effectNames) {
+            if (existingLinkedNames.has(effectName)) continue;
+
+            const sourceEffect = game.items.find((item) => item.type === "effect" && item.name === effectName);
+            if (!sourceEffect) continue;
+
+            const effectData = sourceEffect.toObject();
+            delete effectData._id;
+            delete effectData.folder;
+
+            effectData.flags = foundry.utils.mergeObject(effectData.flags || {}, {
+                hypermalluv: {
+                    linkedGearId: gearItem.id,
+                    linkedGearName: gearItem.name,
+                    sourceEffectName: sourceEffect.name
+                }
+            }, { inplace: false });
+
+            toCreate.push(effectData);
+        }
+
+        if (!toCreate.length) return [];
+        return this.actor.createEmbeddedDocuments("Item", toCreate);
+    }
+
+    async _deleteItemAndLinkedEffects(item) {
+        if (!item) return;
+
+        if (item.type !== "gear") {
+            return item.delete();
+        }
+
+        const linkedEffectIds = this._getLinkedEffectIdsForGear(item.id);
+        const deleteIds = [item.id, ...linkedEffectIds];
+        return this.actor.deleteEmbeddedDocuments("Item", deleteIds);
+    }
+
     async _onRollHitLocation(event) {
         event.preventDefault();
 
@@ -121,25 +203,5 @@ export class HypermallActor extends getCompatibleActorSheet() {
         }
 
         await table.draw({ displayChat: true });
-    }
-
-    async _onNewDay(event) {
-        event.preventDefault();
-
-        const updates = {};
-        const powerUsesMax = this.actor.system?.powerUses?.max;
-        const gorgesMax = this.actor.system?.derived?.gorge?.max;
-
-        if (Number.isFinite(powerUsesMax)) {
-            updates["system.powerUses.value"] = powerUsesMax;
-        }
-
-        if (Number.isFinite(gorgesMax)) {
-            updates["system.derived.gorge.value"] = gorgesMax;
-        }
-
-        if (Object.keys(updates).length > 0) {
-            await this.actor.update(updates);
-        }
     }
 }

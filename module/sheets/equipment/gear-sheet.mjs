@@ -23,17 +23,11 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
         data.system = itemData.system;
 
         data.enrichedDescription = await TextEditor.enrichHTML(data.system.description || "");
+        data.enrichedBrandLine = await TextEditor.enrichHTML(data.system.brandLine || "");
         data.enrichedTags = await TextEditor.enrichHTML(data.system.tags || "");
         data.enrichedEffects = await TextEditor.enrichHTML(data.system.effects || "");
         data.editable = this.isEditable;
 
         return data;
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.find('input[name="system.price"]').blur(e => this.submit({ preventClose: true, preventRender: false }));
-        html.find('input[name="system.quantity"]').blur(e => this.submit({ preventClose: true, preventRender: false }));
     }
 }

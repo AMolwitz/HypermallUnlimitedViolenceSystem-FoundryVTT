@@ -63,7 +63,7 @@
         <div class="resource flex-group-center">
           <label for="system.handedness" class="resource-label">HANDEDNESS</label>
           <div class="resource-content flexrow flex-center flex-between">
-            <select name="system.handedness" data-dtype="String" class="hypermall-handedness-select">
+            <select name="system.handedness" data-dtype="String" class="hypermall-handedness-select hypermall-select">
               <option value="">(None)</option>
               {{#each handednessDropdown}}
                 <option value="{{@key}}">{{this}}</option>
@@ -99,7 +99,7 @@
         <div class="resource flex-group-center">
           <label for="system.temperament" class="resource-label">TEMPERAMENT</label>
           <div class="resource-content flexrow flex-center flex-between">
-            <select name="system.temperament" data-dtype="String" class="hypermall-temperament-select">
+            <select name="system.temperament" data-dtype="String" class="hypermall-temperament-select hypermall-select">
               <option value="">Select Temperament</option>
               {{#each temperamentDropdown}}
                 <option value="{{@key}}">{{this}}</option>

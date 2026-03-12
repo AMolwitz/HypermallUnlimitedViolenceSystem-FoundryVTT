@@ -100,7 +100,8 @@
     "gear": {
       "price": 1,
       "quantity": 1,
-      "brandline": "",
+      "carryType": "stowed",
+      "brandLine": "",
       "description": "",
       "tags": "",
       "effects": ""

@@ -648,6 +648,26 @@
   -webkit-box-shadow: 0 0 10px var(--glow-color, rgba(255, 0, 0, 0.5));
   box-shadow: 0 0 10px var(--glow-color, rgba(255, 0, 0, 0.5));
 }
+.hypermall .items-list .item .item-carry-type-header,
+.hypermall .items-list .item .item-carry-type-cell {
+  flex: 0 0 90px;
+  text-align: center;
+  border-left: 1px solid #c9c7b8;
+  border-right: 1px solid #c9c7b8;
+  font-size: 12px;
+}
+.hypermall .items-list .item .gear-carry-type {
+  width: 100%;
+  font-size: 11px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0 2px;
+  text-align: center;
+  -webkit-appearance: auto;
+  appearance: auto;
+}
 .hypermall .effects .item .effect-source,
 .hypermall .effects .item .effect-duration,
 .hypermall .effects .item .effect-controls {

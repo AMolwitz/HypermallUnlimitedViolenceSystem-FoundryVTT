@@ -7,6 +7,7 @@ export class HypermallEquipmentData extends foundry.abstract.TypeDataModel {
             price: new NumberField({ initial: 1 }),
             quantity: new NumberField({ initial: 1 }),
             rank: new NumberField({ initial: 1, min: 1, max: 4 }),
+            carryType: new StringField({ initial: 'stowed' }),
             description: new StringField(),
             brandLine: new StringField(),
             tags: new StringField(),

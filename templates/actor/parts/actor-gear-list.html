@@ -3,6 +3,7 @@
         <div class='item-name'>{{localize 'Name'}}</div>
         <div class="item-prop">{{localize 'MSRP'}}</div>
         <div class="item-prop">{{localize 'Quantity'}}</div>
+        <div class="item-prop item-carry-type-header">Carry</div>
         <div class='item-controls'>
             <a class='item-control gear-create' title='Create New Equipment'>
                 <i class='fas fa-plus'></i>
@@ -20,6 +21,16 @@
         </div>
         <div class="item-prop">{{item.system.price}}</div>
         <div class="item-prop">{{item.system.quantity}}</div>
+        <div class="item-prop item-carry-type-cell">
+            <select class="gear-carry-type" data-item-id="{{item._id}}">
+                <option value="held-1h" {{#if (eq item.system.carryType "held-1h")}}selected{{/if}}>Held 1H</option>
+                <option value="held-2h" {{#if (eq item.system.carryType "held-2h")}}selected{{/if}}>Held 2H</option>
+                <option value="hardpoint" {{#if (eq item.system.carryType "hardpoint")}}selected{{/if}}>Hardpoint</option>
+                <option value="worn" {{#if (eq item.system.carryType "worn")}}selected{{/if}}>Worn</option>
+                <option value="stowed" {{#if (eq item.system.carryType "stowed")}}selected{{/if}}>Stowed</option>
+                <option value="dropped" {{#if (eq item.system.carryType "dropped")}}selected{{/if}}>Dropped</option>
+            </select>
+        </div>
         <div class='item-controls'>
             <a class='item-control gear-edit' title='Edit'>
                 <i class='fas fa-edit'></i>
