@@ -43,6 +43,7 @@
         </div>
         <p style="margin: 0 0 12px; color: #999; font-style: italic;">
           Rules are recalculated from the dropped effect every time the actor prepares data.
+          Example paths include: <code>system.abilities.physick.value</code>, <code>system.derived.dodge.value</code>, </code>or any valid data path on the actor.
         </p>
 
         {{#each rules as |rule index|}}
@@ -76,9 +77,6 @@
                 class="effect-rule-value"
                 placeholder="Number, formula, string, or JSON object"
                 value="{{rule.value}}" />
-              <small style="display: block; margin-top: 4px; font-style: italic; color: #999;">
-                Supports numbers, formulas like @actor.abilities.savvy.value + 1, or JSON like {"ac":1,"broken":false}
-              </small>
             </div>
             <button
               type="button"

@@ -108,6 +108,24 @@ async function seedStarterEffectsLibrary() {
         ],
       },
     },
+    {
+      name: "Starter Effect: Armour Set 3",
+      system: {
+        description: "Sets armour to 3 while this effect is present.",
+        rules: [
+          { path: "system.armour", operation: "set", value: "3" }
+        ],
+      },
+    },
+    {
+      name: "Starter Effect: Stress Max Down",
+      system: {
+        description: "Decreases Stress max by 2 while this effect is present.",
+        rules: [
+          { path: "system.stress.max", operation: "subtract", value: "2" }
+        ],
+      },
+    },
   ];
 
   for (const effect of starterEffects) {

@@ -111,7 +111,7 @@ export class HypermallNPCSheet extends HypermallActor {
   async _prepareItems(context) {
     // Initialize containers.
     const gear = [];
-    const effectItems = [];
+    const effects = [];
     const mutations = [];
     const psionics = [];
 
@@ -125,7 +125,7 @@ export class HypermallNPCSheet extends HypermallActor {
       if (i.type === 'gear') {
         gear.push(i);
       } else if (i.type === 'effect') {
-        effectItems.push(i);
+        effects.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
       } else if (i.type === 'psionic') {
@@ -135,7 +135,8 @@ export class HypermallNPCSheet extends HypermallActor {
 
     // Assign and return
     context.gear = gear;
-    context.effectItems = effectItems;
+    context.effects = effects;
+    context.effectItems = effects;
     context.mutations = mutations;
     context.psionics = psionics;
   }
@@ -261,6 +262,7 @@ export class HypermallNPCSheet extends HypermallActor {
     // Gear management
     html.find('.gear-create').click(this._onCreateGear.bind(this));
     html.find('.effect-create').click(this._onCreateEffect.bind(this));
+    html.find('.effect-delete-all').click(this._onDeleteAllEffects.bind(this));
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
@@ -368,6 +370,29 @@ export class HypermallNPCSheet extends HypermallActor {
     if (confirmed) {
       return item.delete();
     }
+  }
+
+  async _onDeleteAllEffects(event) {
+    event.preventDefault();
+
+    const effectIds = this.actor.items
+      .filter((item) => item.type === "effect")
+      .map((item) => item.id);
+
+    if (!effectIds.length) {
+      ui.notifications.info("No effects to delete.");
+      return;
+    }
+
+    const confirmed = await Dialog.confirm({
+      title: "Delete All Effects?",
+      content: `<p>This will permanently delete ${effectIds.length} effect(s) from ${this.actor.name}.</p>`,
+      options: { classes: ["hypermall", "dialog", "hypermall-theme"] }
+    });
+
+    if (!confirmed) return;
+
+    await this.actor.deleteEmbeddedDocuments("Item", effectIds);
   }
 
   /** @inheritDoc */

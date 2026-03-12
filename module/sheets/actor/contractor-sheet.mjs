@@ -152,7 +152,7 @@ export class HypermallContractorSheet extends HypermallActor {
   async _prepareItems(context) {
     // Initialize containers.
     const gear = [];
-    const effectItems = [];
+    const effects = [];
     const mutations = [];
     const psionics = [];
     const backgrounds = [];
@@ -166,7 +166,7 @@ export class HypermallContractorSheet extends HypermallActor {
       if (i.type === 'gear') {
         gear.push(i);
       } else if (i.type === 'effect') {
-        effectItems.push(i);
+        effects.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
       } else if (i.type === 'psionic') {
@@ -178,7 +178,8 @@ export class HypermallContractorSheet extends HypermallActor {
 
     // Assign and return
     context.gear = gear;
-    context.effectItems = effectItems;
+    context.effects = effects;
+    context.effectItems = effects;
     context.mutations = mutations;
     context.psionics = psionics;
     context.backgrounds = backgrounds;
@@ -307,6 +308,7 @@ export class HypermallContractorSheet extends HypermallActor {
     // Gear management
     html.find('.gear-create').click(this._onCreateGear.bind(this));
     html.find('.effect-create').click(this._onCreateEffect.bind(this));
+    html.find('.effect-delete-all').click(this._onDeleteAllEffects.bind(this));
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
@@ -434,6 +436,29 @@ export class HypermallContractorSheet extends HypermallActor {
     }
   }
 
+  async _onDeleteAllEffects(event) {
+    event.preventDefault();
+
+    const effectIds = this.actor.items
+      .filter((item) => item.type === "effect")
+      .map((item) => item.id);
+
+    if (!effectIds.length) {
+      ui.notifications.info("No effects to delete.");
+      return;
+    }
+
+    const confirmed = await Dialog.confirm({
+      title: "Delete All Effects?",
+      content: `<p>This will permanently delete ${effectIds.length} effect(s) from ${this.actor.name}.</p>`,
+      options: { classes: ["hypermall", "dialog", "hypermall-theme"] }
+    });
+
+    if (!confirmed) return;
+
+    await this.actor.deleteEmbeddedDocuments("Item", effectIds);
+  }
+
   /** @inheritDoc */
   async activateEditor(name, options = {}, initialContent = "") {
     options.engine = "prosemirror"
@@ -489,7 +514,8 @@ export class HypermallContractorSheet extends HypermallActor {
 
         let meatModifier = parseInt(this.getMeatModifierFromSheet(triggeringElement));
         let thinkitudeDiePool = this.actor.system.abilities.thinkitude.value;
-        let psiDiePool = thinkitudeDiePool + meatModifier;
+        let psiPower = Number(this.actor.system.psiPower ?? 0);
+        let psiDiePool = thinkitudeDiePool + meatModifier + psiPower;
         let psiRollString = this.generateRollString(psiDiePool);
 
         let psiRoll = await new Roll(psiRollString).evaluate();
@@ -497,7 +523,7 @@ export class HypermallContractorSheet extends HypermallActor {
           psiRoll._formula = `${1}d6cs>=5`;
         }
 
-        await this.sendPsionicRollResults(psiRoll, psiDiePool, meatModifier);
+        await this.sendPsionicRollResults(psiRoll, psiDiePool, meatModifier, psiPower);
         
         // Add meat damage modifier to meat.value
         const currentMeat = this.actor.system.meat.value;
@@ -653,12 +679,13 @@ export class HypermallContractorSheet extends HypermallActor {
     return this.element.find('#hypermall-roll-meat-modifier').val() ?? '';
   }
 
-  async sendPsionicRollResults(roll, Die_Pool, meatModifier) {
+  async sendPsionicRollResults(roll, Die_Pool, meatModifier, psiPower = 0) {
     let flavor = '';
     if (Die_Pool < 0) {
       flavor += 'Rolled with negative die pool. The American Consumer Federation recommends against doing that.<br>';
     }
-    flavor += `Rolled Psionics with a + ${meatModifier} from taking ${meatModifier} meat damage.`
+    const psiPowerText = psiPower >= 0 ? `+ ${psiPower}` : `- ${Math.abs(psiPower)}`;
+    flavor += `Rolled Psionics with a + ${meatModifier} from taking ${meatModifier} meat damage, and ${psiPowerText} from psi power.`
 
     const chatMessage = await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),

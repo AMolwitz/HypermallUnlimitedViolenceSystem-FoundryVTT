@@ -1,12 +1,16 @@
 <ol class="items-list">
     <li class='item flexrow items-header'>
         <div class='item-name'>{{localize 'Name'}}</div>
-        <div class='item-prop'>{{localize 'Type'}}</div>
+        <a class='item-control effect-delete-all' title='Delete All Effects'>
+            <i class='fas fa-trash'></i>
+            Delete All
+        </a>
         <div class='item-controls'>
             <a class='item-control effect-create' title='Create New Effect'>
                 <i class='fas fa-plus'></i>
                 {{localize 'DOCUMENT.New' type='Effect'}}
             </a>
+
         </div>
     </li>
     {{#each effectItems as |item id|}}
@@ -17,7 +21,6 @@
             </div>
             <h4>{{item.name}}</h4>
         </div>
-        <div class="item-prop">Effect</div>
         <div class='item-controls'>
             <a class='item-control effect-edit' title='Edit'>
                 <i class='fas fa-edit'></i>

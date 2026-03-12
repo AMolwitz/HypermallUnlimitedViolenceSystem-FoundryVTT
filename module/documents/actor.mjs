@@ -81,6 +81,9 @@ export class HypermallActor extends Actor {
    */
   _getCharacterRollData(data) {
     if (this.type !== 'contractor') return;
+
+    data.psiPower = Number(data.psiPower ?? data.system?.psiPower ?? 0);
+
     // Copy the ability scores to the top level, so that rolls can use
     // formulas like `/roll @brainsd6`.
     if (data.abilities) {
