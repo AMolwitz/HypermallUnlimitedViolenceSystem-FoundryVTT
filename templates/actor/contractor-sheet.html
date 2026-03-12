@@ -163,6 +163,7 @@
     <a class="item" data-tab="psionics">Psionics</a>
     <a class="item" data-tab="passions">Passions</a>
     <a class="item" data-tab="gear">Gear</a>
+    <a class="item" data-tab="effects">Effects</a>
     <a class="item" data-tab="foundry">Foundry Data</a>
   </nav>
 
@@ -173,7 +174,6 @@
     <div class="tab hypermall-competencies" data-group="primary" data-tab="competencies">
       {{> "actor-competencies"}}
     </div>
-
     {{!-- Holistic Wellness (Thresholds) Tab --}}
     <div class="tab hypermall-thresholds" data-group="primary" data-tab="thresholds">
       {{> "actor-thresholds"}}
@@ -182,11 +182,13 @@
           <span class="wellness-label">Dodge:</span>
           <span class="wellness-value">{{system.derived.dodge.value}}</span>
         </div>
+        <div class="center">
+          <button type="button" class="hypermall-dodge-roll">Dodge Roll</button>
+        </div>
         <div class="wellness-stat">
           <span class="wellness-label">Gorges:</span>
-           <textarea class="hypermall-thresholds-input hypermall-gorge-indicator" name="system.derived.gorge.value"
-                data-dtype="Number">{{system.derived.gorge.value}}</textarea>
           <span class="wellness-value">{{system.derived.gorge.value}}</span> / <span class="wellness-value">{{system.derived.gorge.max}}</span> 
+          <button type="button" class="hypermall-gorge-button">Gorge</button>
         </div>
       </div>
     </div>
@@ -201,8 +203,7 @@
     <div class="tab hypermall-psionics" data-group="primary" data-tab="psionics" data-drop-type="psionic">
       <div class="center" style="margin-bottom: 10px;">
         <label class="resource-label">Power Uses: </label>
-        <textarea class="hypermall-thresholds-input hypermall-power-uses-indicator" name="system.powerUses.value"
-            data-dtype="Number" style="width: 40px; height: 30px; text-align: center;">{{system.powerUses.value}}</textarea>
+        <span class="hypermall-power-uses-indicator">{{system.powerUses.value}}</span>
         <span> / </span>
         <span class="hypermall-thresholds-max">{{system.powerUses.max}}</span>
       </div>
@@ -217,6 +218,11 @@
     {{!-- Gear Tab --}}
     <div class="tab hypermall-gear" data-group="primary" data-tab="gear" data-drop-type="gear">
       {{> "actor-gear-list"}}
+    </div>
+
+    {{!-- Effects Tab --}}
+    <div class="tab hypermall-effects" data-group="primary" data-tab="effects" data-drop-type="effect">
+      {{> "actor-effects"}}
     </div>
 
     {{!-- Foundry Information --}}

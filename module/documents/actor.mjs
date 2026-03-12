@@ -30,12 +30,14 @@ export class HypermallActor extends Actor {
    */
   prepareDerivedData() {
     const actorData = this;
-    const systemData = actorData.system;
+    this._applyEffectRules({ includeDerivedPaths: false });
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
     this._prepareCharacterData(actorData);
     this._prepareNpcData(actorData);
+
+    this._applyEffectRules({ includeDerivedPaths: true });
   }
 
   /**
@@ -94,6 +96,103 @@ export class HypermallActor extends Actor {
           data[sanitizedName] = skill?.value ?? 0;
         }
       }
+    }
+  }
+
+  /**
+   * Apply all dropped effect-item rules to transient actor data.
+   * This mirrors PF2E's rule-element lifecycle: effects modify prepared data
+   * instead of persisting source changes when the item is dropped.
+   * @param {object} options
+   * @param {boolean} options.includeDerivedPaths Apply only rules targeting
+   * derived data when true, otherwise apply non-derived paths.
+   */
+  _applyEffectRules({ includeDerivedPaths = false } = {}) {
+    const effectItems = this.items.filter((item) => item.type === "effect" && Array.isArray(item.system?.rules));
+
+    for (const effectItem of effectItems) {
+      for (const rule of effectItem.system.rules) {
+        const path = typeof rule?.path === "string" ? rule.path.trim() : "";
+        if (!path) continue;
+
+        const targetsDerivedData = path.startsWith("system.derived.");
+        if (targetsDerivedData !== includeDerivedPaths) continue;
+
+        try {
+          const currentValue = foundry.utils.getProperty(this, path);
+          const resolvedValue = this._resolveEffectRuleValue(rule.value, effectItem);
+          const nextValue = this._getAppliedEffectValue({
+            currentValue,
+            operation: rule.operation,
+            value: resolvedValue,
+          });
+
+          foundry.utils.setProperty(this, path, nextValue);
+        } catch (err) {
+          console.error(`Error applying effect rule from "${effectItem.name}":`, err);
+        }
+      }
+    }
+  }
+
+  _resolveEffectRuleValue(rawValue, effectItem) {
+    if (typeof rawValue !== "string") return rawValue;
+
+    const trimmedValue = rawValue.trim();
+    if (!trimmedValue.length) return "";
+
+    if ((trimmedValue.startsWith("{") && trimmedValue.endsWith("}"))
+      || (trimmedValue.startsWith("[") && trimmedValue.endsWith("]"))) {
+      try {
+        return JSON.parse(trimmedValue);
+      } catch (_error) {
+        // Fall through to formula/string handling.
+      }
+    }
+
+    if (!Number.isNaN(Number(trimmedValue))) {
+      return Number(trimmedValue);
+    }
+
+    if (/[+\-*/()@]/.test(trimmedValue)) {
+      const rollData = {
+        actor: this.getRollData(),
+        item: effectItem.getRollData?.() ?? effectItem.system,
+      };
+      const formula = Roll.replaceFormulaData(trimmedValue, rollData, { missing: "0" });
+
+      try {
+        return Roll.safeEval(formula);
+      } catch (_error) {
+        return formula;
+      }
+    }
+
+    return trimmedValue;
+  }
+
+  _getAppliedEffectValue({ currentValue, operation = "add", value }) {
+    switch (operation) {
+      case "set":
+      case "override":
+        return value;
+      case "add":
+        return (Number(currentValue) || 0) + (Number(value) || 0);
+      case "subtract":
+        return (Number(currentValue) || 0) - (Number(value) || 0);
+      case "multiply":
+        return (Number(currentValue) || 0) * (Number(value) || 1);
+      case "divide": {
+        const divisor = Number(value) || 0;
+        return divisor === 0 ? currentValue : (Number(currentValue) || 0) / divisor;
+      }
+      case "upgrade":
+        return currentValue == null ? value : (currentValue >= value ? currentValue : value);
+      case "downgrade":
+        return currentValue == null ? value : (currentValue <= value ? currentValue : value);
+      default:
+        console.warn(`Unknown effect operation: ${operation}`);
+        return currentValue;
     }
   }
 

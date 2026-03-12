@@ -95,7 +95,7 @@
     }
   },
   "Item": {
-    "types": ["gear", "mutation", "psionic", "background", "weapon", "tags"],
+    "types": ["gear", "effect", "mutation", "psionic", "background", "weapon", "tags"],
     "gear": {
       "price": 1,
       "quantity": 1,
@@ -103,6 +103,10 @@
       "description": "",
       "tags": "",
       "effects": ""
+    },
+    "effect": {
+      "description": "",
+      "rules": []
     },
     "mutation": {
       "rank": 1,

@@ -5,6 +5,7 @@ import { HypermallEquipment } from "./documents/equipment.mjs";
 import { HypermallContractorSheet } from "./sheets/actor/contractor-sheet.mjs";
 import { HypermallNPCSheet } from "./sheets/actor/npc-sheet.mjs";
 import { HypermallEquipmentSheet } from "./sheets/equipment/gear-sheet.mjs";
+import { HypermallEffectSheet } from "./sheets/equipment/effect-sheet.mjs";
 import { HypermallMutationSheet } from "./sheets/equipment/mutation-sheet.mjs";
 import { HypermallPsionicSheet } from "./sheets/equipment/psionic-sheet.mjs";
 import { HypermallTagsSheet } from "./sheets/equipment/tags-sheet.mjs";
@@ -13,6 +14,7 @@ import {
   HypermallContractorData,
   HypermallNPCData,
   HypermallEquipmentData,
+  HypermallEffectData,
   HypermallTagsData
 } from "./data/index.mjs";
 import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActorSheet, getCompatibleItemSheet } from "./utils/compatibility.mjs";
@@ -57,6 +59,78 @@ async function seedCoreRolltablesFromCompendium() {
   return true;
 }
 
+async function seedStarterEffectsLibrary() {
+  const folderName = "HypermallUV Starter Effects";
+  let folder = game.folders.find((entry) => entry.type === "Item" && entry.name === folderName);
+
+  if (!folder) {
+    folder = await Folder.create({
+      name: folderName,
+      type: "Item",
+      color: "#4c7495",
+    });
+  }
+
+  const starterEffects = [
+    {
+      name: "Starter Effect: Physick Up",
+      system: {
+        description: "Increases Physick by 1 while this effect is present.",
+        rules: [
+          { path: "system.abilities.physick.value", operation: "add", value: "1" }
+        ],
+      },
+    },
+    {
+      name: "Starter Effect: Craveability Down",
+      system: {
+        description: "Decreases Craveability by 1 while this effect is present.",
+        rules: [
+          { path: "system.abilities.craveability.value", operation: "subtract", value: "1" }
+        ],
+      },
+    },
+    {
+      name: "Starter Effect: Astral Navigation Up",
+      system: {
+        description: "Increases Astral Navigation by 1 while this effect is present.",
+        rules: [
+          { path: "system.skills.astralNavigation.value", operation: "add", value: "1" }
+        ],
+      },
+    },
+    {
+      name: "Starter Effect: Dodge Up",
+      system: {
+        description: "Increases Dodge by 1 while this effect is present.",
+        rules: [
+          { path: "system.derived.dodge.value", operation: "add", value: "1" }
+        ],
+      },
+    },
+  ];
+
+  for (const effect of starterEffects) {
+    const exists = game.items.some((item) => (
+      item.type === "effect"
+      && item.name === effect.name
+      && item.folder?.id === folder.id
+    ));
+
+    if (exists) continue;
+
+    await Item.create({
+      name: effect.name,
+      type: "effect",
+      img: "icons/svg/aura.svg",
+      folder: folder.id,
+      system: effect.system,
+    }, { renderSheet: false });
+  }
+
+  return true;
+}
+
 Hooks.once('init', async function () {
 
   // Define custom Document classes
@@ -70,6 +144,7 @@ Hooks.once('init', async function () {
 
   Object.assign(CONFIG.Item.dataModels, {
     gear: HypermallEquipmentData,
+    effect: HypermallEffectData,
     psionic: HypermallEquipmentData,
     mutation: HypermallEquipmentData,
     tags: HypermallTagsData
@@ -105,6 +180,7 @@ Hooks.once('init', async function () {
   actors.registerSheet("hypermalluv", HypermallContractorSheet, { types: ["contractor"], makeDefault: true });
   actors.registerSheet("hypermalluv", HypermallNPCSheet, { types: ["npc"], makeDefault: false });
   items.registerSheet("hypermalluv", HypermallEquipmentSheet, { types: ["gear"], makeDefault: true });
+  items.registerSheet("hypermalluv", HypermallEffectSheet, { types: ["effect"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallMutationSheet, { types: ["mutation"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallPsionicSheet, { types: ["psionic"], makeDefault: true });
   items.registerSheet("hypermalluv", HypermallTagsSheet, { types: ["tags"], makeDefault: true });
@@ -126,6 +202,14 @@ Hooks.once('init', async function () {
     default: false,
   });
 
+  game.settings.register("hypermalluv", "starterEffectsSeeded", {
+    name: "Starter effects seeded",
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false,
+  });
+
 });
 
 /* -------------------------------------------- */
@@ -140,6 +224,14 @@ Hooks.once("ready", async function () {
     if (seeded) {
       await game.settings.set("hypermalluv", "coreRolltablesSeeded", true);
       ui.notifications.info("HypermallUV: Core rolltables imported to this world.");
+    }
+  }
+
+  if (game.user.isGM && !game.settings.get("hypermalluv", "starterEffectsSeeded")) {
+    const seeded = await seedStarterEffectsLibrary();
+    if (seeded) {
+      await game.settings.set("hypermalluv", "starterEffectsSeeded", true);
+      ui.notifications.info("HypermallUV: Starter effect library created.");
     }
   }
 

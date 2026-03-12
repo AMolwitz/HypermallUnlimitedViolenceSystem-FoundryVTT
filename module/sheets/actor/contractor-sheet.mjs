@@ -152,6 +152,7 @@ export class HypermallContractorSheet extends HypermallActor {
   async _prepareItems(context) {
     // Initialize containers.
     const gear = [];
+    const effectItems = [];
     const mutations = [];
     const psionics = [];
     const backgrounds = [];
@@ -164,6 +165,8 @@ export class HypermallContractorSheet extends HypermallActor {
       // Categorize by item type
       if (i.type === 'gear') {
         gear.push(i);
+      } else if (i.type === 'effect') {
+        effectItems.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
       } else if (i.type === 'psionic') {
@@ -175,6 +178,7 @@ export class HypermallContractorSheet extends HypermallActor {
 
     // Assign and return
     context.gear = gear;
+    context.effectItems = effectItems;
     context.mutations = mutations;
     context.psionics = psionics;
     context.backgrounds = backgrounds;
@@ -293,18 +297,21 @@ export class HypermallContractorSheet extends HypermallActor {
       this.validateThresholdChange(eventValue, event.target, actorDebt, null, Infinity);
     });
     html.find('.hypermall-hit-location').click(this._onRollHitLocation.bind(this));
+    html.find('.hypermall-resurrection').click(this._onResurrection.bind(this));
+    html.find('.hypermall-stress-break').click(this._onStressBreak.bind(this));
+    html.find('.hypermall-loan-default').click(this._onLoanDefault.bind(this));
+    html.find('.hypermall-new-day').click(this._onNewDay.bind(this));
     html.find('.hypermall-dodge-roll').click(this._onRollDodge.bind(this));
-    html.find('.hypermall-gorge-indicator').change((event) => {
-      const eventValue = parseInt(event.target.value);
-      const actorGorge = this.actor.system.derived?.gorge;
-      this.validateThresholdChange(eventValue, event.target, actorGorge, actorMeat.min);
-    });
+    html.find('.hypermall-gorge-button').click(this._onGorge.bind(this));
 
     // Gear management
     html.find('.gear-create').click(this._onCreateGear.bind(this));
+    html.find('.effect-create').click(this._onCreateEffect.bind(this));
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
+    html.on('click', '.effect-edit', this._onItemEdit.bind(this));
+    html.on('click', '.effect-delete', this._onItemDelete.bind(this));
 
     // --- Drag-and-Drop Hover Feedback ---
     const dropZones = html.find('[data-drop-type]');
@@ -341,6 +348,16 @@ export class HypermallContractorSheet extends HypermallActor {
     return Item.create(itemData, { parent: this.actor });
   }
 
+  async _onCreateEffect(event) {
+    event.preventDefault();
+    const itemData = {
+      name: "New Effect",
+      type: "effect",
+    };
+
+    return Item.create(itemData, { parent: this.actor });
+  }
+
   /**
   * Adjusts the sheet height based on the selected tab.
   * @param {string} tabName The 'data-tab' attribute of the selected tab.
@@ -374,7 +391,7 @@ export class HypermallContractorSheet extends HypermallActor {
     const dropType = dropContainer.dataset.dropType;
 
     // Validate that the drop type is one we handle.
-    if (!["gear", "mutation", "psionic", "background"].includes(dropType)) return false;
+    if (!["gear", "effect", "mutation", "psionic", "background"].includes(dropType)) return false;
 
     const item = await Item.fromDropData(data);
     if (!item) return false;
@@ -567,6 +584,32 @@ export class HypermallContractorSheet extends HypermallActor {
     });
   }
 
+  async _onGorge(event) {
+    event.preventDefault();
+
+    const actorGorge = this.actor.system?.derived?.gorge;
+    if (!actorGorge) return;
+
+    const currentGorge = Number(actorGorge.value ?? 0);
+    const minGorge = Number(actorGorge.min ?? 0);
+
+    if (currentGorge <= minGorge) {
+      ui.notifications.warn("No Gorges remaining.");
+      return;
+    }
+
+    const newGorgeValue = currentGorge - 1;
+    await this.actor.update({ "system.derived.gorge.value": newGorgeValue });
+
+    const roll = await new Roll("1d6").evaluate();
+    const healAmount = roll.total ?? 0;
+
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: `Heal ${healAmount} meat damage`
+    });
+  }
+
   calculateDiePool() {
     const rollData = this.actor.getRollData();
 
@@ -615,7 +658,7 @@ export class HypermallContractorSheet extends HypermallActor {
     if (Die_Pool < 0) {
       flavor += 'Rolled with negative die pool. The American Consumer Federation recommends against doing that.<br>';
     }
-    flavor += `Rolled Psionics with a ${meatModifier} meat damage modifier.`
+    flavor += `Rolled Psionics with a + ${meatModifier} from taking ${meatModifier} meat damage.`
 
     const chatMessage = await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
@@ -679,5 +722,36 @@ export class HypermallContractorSheet extends HypermallActor {
     }
   }
 
+  async _onNewDay(event) {
+      event.preventDefault();
+
+      const updates = {};
+      const powerUsesMax = this.actor.system?.powerUses?.max;
+      const gorgesMax = this.actor.system?.derived?.gorge?.max;
+
+      if (Number.isFinite(powerUsesMax)) {
+          updates["system.powerUses.value"] = powerUsesMax;
+      }
+
+      if (Number.isFinite(gorgesMax)) {
+          updates["system.derived.gorge.value"] = gorgesMax;
+      }
+
+      if (Object.keys(updates).length > 0) {
+          await this.actor.update(updates);
+      }
+
+      const diceSound = CONFIG?.sounds?.dice ?? "sounds/dice.wav";
+      try {
+        await AudioHelper.play({
+          src: diceSound,
+          autoplay: true,
+          loop: false,
+          volume: 0.8
+        }, false);
+      } catch (err) {
+        console.warn("Failed to play Gorge audio:", err);
+      }
+  }
 }
 

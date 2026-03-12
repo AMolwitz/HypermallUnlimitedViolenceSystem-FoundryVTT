@@ -111,6 +111,7 @@ export class HypermallNPCSheet extends HypermallActor {
   async _prepareItems(context) {
     // Initialize containers.
     const gear = [];
+    const effectItems = [];
     const mutations = [];
     const psionics = [];
 
@@ -123,6 +124,8 @@ export class HypermallNPCSheet extends HypermallActor {
       // Categorize by item type
       if (i.type === 'gear') {
         gear.push(i);
+      } else if (i.type === 'effect') {
+        effectItems.push(i);
       } else if (i.type === 'mutation') {
         mutations.push(i);
       } else if (i.type === 'psionic') {
@@ -132,6 +135,7 @@ export class HypermallNPCSheet extends HypermallActor {
 
     // Assign and return
     context.gear = gear;
+    context.effectItems = effectItems;
     context.mutations = mutations;
     context.psionics = psionics;
   }
@@ -157,6 +161,9 @@ export class HypermallNPCSheet extends HypermallActor {
       const actorDebt = this.actor.system.debt;
       this.validateThresholdChange(eventValue, event.target, actorDebt, null, Infinity);
     });
+    html.find('.hypermall-resurrection').click(this._onResurrection.bind(this));
+    html.find('.hypermall-stress-break').click(this._onStressBreak.bind(this));
+    html.find('.hypermall-loan-default').click(this._onStressBreak.bind(this));
 
     // Meat damage modifier increment/decrement buttons
     html.find('.hypermall-meat-modifier-increment').click((event) => {
@@ -253,9 +260,12 @@ export class HypermallNPCSheet extends HypermallActor {
 
     // Gear management
     html.find('.gear-create').click(this._onCreateGear.bind(this));
+    html.find('.effect-create').click(this._onCreateEffect.bind(this));
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
+    html.on('click', '.effect-edit', this._onItemEdit.bind(this));
+    html.on('click', '.effect-delete', this._onItemDelete.bind(this));
 
     html.find('.hypermall-hit-location').click(this._onRollHitLocation.bind(this));
 
@@ -322,6 +332,16 @@ export class HypermallNPCSheet extends HypermallActor {
     };
 
     // Create the item directly on the actor.
+    return Item.create(itemData, { parent: this.actor });
+  }
+
+  async _onCreateEffect(event) {
+    event.preventDefault();
+    const itemData = {
+      name: "New Effect",
+      type: "effect",
+    };
+
     return Item.create(itemData, { parent: this.actor });
   }
 

@@ -15,6 +15,7 @@ export const preloadHandlebarsTemplates = async function () {
     "actor-passions": "systems/hypermalluv/templates/actor/parts/actor-passions.html",
     "actor-foundry-data": "systems/hypermalluv/templates/actor/parts/actor-foundry-data.html",
     "actor-gear-list": "systems/hypermalluv/templates/actor/parts/actor-gear-list.html",
+    "actor-effects": "systems/hypermalluv/templates/actor/parts/actor-effects.html",
 //systems/HMUV/templates/actor/parts/actor-foundry-data.html
     // App partials.
   };

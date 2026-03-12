@@ -1,0 +1,100 @@
+<form class="{{cssClass}} {{actor.type}} flexcol hypermall hypermall-item" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-fields">
+      <label for="name" class="resource-label">Name</label>
+      <div class="resource-content flexrow flex-center flex-between">
+        <input class="hypermall-actor-name" type="text" name="name" value="{{item.name}}"
+            data-dtype="String" />
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="rules">Rules</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      <label for="system.description" class="resource-label">Description</label>
+      <div class="hypermall-editor-container">
+        {{editor
+        enrichedDescription
+        target="system.description"
+        button=true
+        engine="prosemirror"
+        editable=editable
+        collaborate=false }}
+      </div>
+    </div>
+
+    {{!-- Rules Tab --}}
+    <div class="tab" data-group="primary" data-tab="rules">
+      <div class="rules-container">
+        <div class="rules-header">
+          <h3>Effect Rules</h3>
+          <button type="button" class="effect-add-rule" title="Add Rule">
+            <i class="fas fa-plus"></i> Add Rule
+          </button>
+        </div>
+        <p style="margin: 0 0 12px; color: #999; font-style: italic;">
+          Rules are recalculated from the dropped effect every time the actor prepares data.
+        </p>
+
+        {{#each rules as |rule index|}}
+        <div class="rule-item" data-rule-index="{{index}}">
+          <label class="resource-label">Rule {{add index 1}}</label>
+          <div class="rule-controls">
+            <div class="rule-field">
+              <label for="path-{{index}}" class="rule-label">Path</label>
+              <input
+                type="text"
+                id="path-{{index}}"
+                class="effect-rule-path"
+                placeholder="e.g., system.abilities.physick.value or system.derived.dodge.value"
+                value="{{rule.path}}" />
+            </div>
+            <div class="rule-field">
+              <label for="operation-{{index}}" class="rule-label">Operation</label>
+              <select id="operation-{{index}}" class="effect-rule-operation">
+                <option value="set" {{#if (eq rule.operation "set")}}selected{{/if}}>Set (Replace)</option>
+                <option value="add" {{#if (eq rule.operation "add")}}selected{{/if}}>Add</option>
+                <option value="subtract" {{#if (eq rule.operation "subtract")}}selected{{/if}}>Subtract</option>
+                <option value="multiply" {{#if (eq rule.operation "multiply")}}selected{{/if}}>Multiply</option>
+                <option value="divide" {{#if (eq rule.operation "divide")}}selected{{/if}}>Divide</option>
+              </select>
+            </div>
+            <div class="rule-field">
+              <label for="value-{{index}}" class="rule-label">Value</label>
+              <input
+                type="text"
+                id="value-{{index}}"
+                class="effect-rule-value"
+                placeholder="Number, formula, string, or JSON object"
+                value="{{rule.value}}" />
+              <small style="display: block; margin-top: 4px; font-style: italic; color: #999;">
+                Supports numbers, formulas like @actor.abilities.savvy.value + 1, or JSON like {"ac":1,"broken":false}
+              </small>
+            </div>
+            <button
+              type="button"
+              class="effect-delete-rule"
+              data-rule-index="{{index}}"
+              title="Delete Rule">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        {{/each}}
+
+        {{#if (eq rules.length 0)}}
+        <p style="font-style: italic; color: #999;">No rules defined. Click "Add Rule" to create one.</p>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+</form>

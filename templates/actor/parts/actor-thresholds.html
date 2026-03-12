@@ -2,9 +2,8 @@
 
     <div class="center grid grid-1col">
         <br />
-        <label class="resource-label center-align">Current</label>
-        <br />
-        <label class="resource-label center-align">Total</label>
+        <label class="resource-label center-align">Current</label>     
+        <label class="resource-label center-align">Total / Threshold</label>
     </div>
 
     <section class="hypermall-container">
@@ -18,7 +17,6 @@
             <textarea class="hypermall-thresholds-max hypermall-mt-indicator" name="system.meat.max"
                 data-dtype="Number">{{system.meat.max}}</textarea>
         </div>
-
     </section>
 
     <section class=" hypermall-container">
@@ -52,16 +50,19 @@
         </div>
         {{/if}}
     </section>
-    <div class="center">
-        <label class="resource-label center-align" for="system.armour">Armour</label>
-        <input type="number" name="system.armour" value="{{system.armour}}" data-dtype="Number" />
+    <div class="grid grid-1col center">
+        <div class="grid grid-2col center">
+            <label class="resource-label center-align" for="system.armour">Armour</label>
+            <input type="number" name="system.armour" value="{{system.armour}}" data-dtype="Number" />
+        </div>
     </div>
     <div class="center">
-        <button type="button" class="hypermall-hit-location">Hit Location</button>
+        <button type="button" class="hypermall-resurrection">Resurrect</button>
     </div>
-    {{#if system.derived.dodge}}
     <div class="center">
-        <button type="button" class="hypermall-dodge-roll">Dodge Roll</button>
+        <button type="button" class="hypermall-stress-break">Stress Break</button>
     </div>
-    {{/if}}
+    <div class="center">
+        <button type="button" class="hypermall-loan-default">Loan Default</button>
+    </div>
 </section>
