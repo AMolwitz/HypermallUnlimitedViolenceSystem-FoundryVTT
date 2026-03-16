@@ -61,26 +61,26 @@
         <tbody>
           <tr>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'one')}}phrenology-active{{/if}}" data-phen-key="one">
-              <input type="text" name="system.phrenology.one" value="{{system.phrenology.one}}" placeholder="1" />
+              <input type="text" name="system.phrenology.one" value="{{sourceSystem.phrenology.one}}" placeholder="1" />
             </td>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'two')}}phrenology-active{{/if}}" data-phen-key="two">
-              <input type="text" name="system.phrenology.two" value="{{system.phrenology.two}}" placeholder="2" />
+              <input type="text" name="system.phrenology.two" value="{{sourceSystem.phrenology.two}}" placeholder="2" />
             </td>
           </tr>
           <tr>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'three')}}phrenology-active{{/if}}" data-phen-key="three">
-              <input type="text" name="system.phrenology.three" value="{{system.phrenology.three}}" placeholder="3" />
+              <input type="text" name="system.phrenology.three" value="{{sourceSystem.phrenology.three}}" placeholder="3" />
             </td>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'four')}}phrenology-active{{/if}}" data-phen-key="four">
-              <input type="text" name="system.phrenology.four" value="{{system.phrenology.four}}" placeholder="4" />
+              <input type="text" name="system.phrenology.four" value="{{sourceSystem.phrenology.four}}" placeholder="4" />
             </td>
           </tr>
           <tr>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'five')}}phrenology-active{{/if}}" data-phen-key="five">
-              <input type="text" name="system.phrenology.five" value="{{system.phrenology.five}}" placeholder="5" />
+              <input type="text" name="system.phrenology.five" value="{{sourceSystem.phrenology.five}}" placeholder="5" />
             </td>
             <td class="phrenology-cell {{#if (eq system.phrenology.active 'six')}}phrenology-active{{/if}}" data-phen-key="six">
-              <input type="text" name="system.phrenology.six" value="{{system.phrenology.six}}" placeholder="6" />
+              <input type="text" name="system.phrenology.six" value="{{sourceSystem.phrenology.six}}" placeholder="6" />
             </td>
           </tr>
         </tbody>
@@ -107,21 +107,21 @@
     <div class="tab hypermall-actions" data-group="primary" data-tab="actions">
       <h3>Damage</h3>
       <div class="damage-line">
-        <input type="text" name="system.damage" value="{{system.damage}}" class="damage-input" />
+        <input type="text" name="system.damage" value="{{sourceSystem.damage}}" class="damage-input" />
       </div>
 
       {{> "actor-damage"}}
 
       <h3>Moves</h3>
       <div class="moves-list">
-        {{#each system.moves as |move index|}}
+        {{#each sourceSystem.moves as |move index|}}
         <div class="move-input-group" data-index="{{index}}">
           <label>{{add index 1}}.</label>
           <input type="text" name="system.moves.{{index}}" value="{{move}}" class="move-input" />
           <button type="button" class="remove-move" title="Remove Move"><i class="fas fa-trash"></i></button>
         </div>
         {{/each}}
-        {{#if (lt system.moves.length 6)}}
+        {{#if (lt sourceSystem.moves.length 6)}}
         <button type="button" class="add-move"><i class="fas fa-plus"></i> Add Move</button>
         {{/if}}
       </div>

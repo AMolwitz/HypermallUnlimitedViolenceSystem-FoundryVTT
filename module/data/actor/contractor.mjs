@@ -12,6 +12,7 @@ export class HypermallContractorData extends foundry.abstract.TypeDataModel {
             }),
             stress: resourceField(0, 6),
             powerUses: resourceField(0, 1),
+            psiPower: new NumberField({ initial: 0 }),
             armour: new NumberField({ initial: 0 }),
             damageDice: new NumberField({ initial: 0 }),            damageModifier: new NumberField({ initial: 0 }),            background: new StringField(),
             iclTeam: new StringField(),

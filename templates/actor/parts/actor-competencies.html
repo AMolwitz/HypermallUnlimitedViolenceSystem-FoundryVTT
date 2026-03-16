@@ -3,14 +3,19 @@
 {{> "actor-damage"}}
 
 <section class="grid grid-4col">
-    {{#each system.abilities as |ability akey|}}
+    {{#each competencyAbilities as |ability akey|}}
     {{#if ability.label}}
     <div class="ability flexcol flex-group-center hypermall-container">
         <div class="hypermall-header hypermall-attribute-container">
             <label for="system.abilities.{{akey}}.value" class="resource-label flexlarge align-left hypermall-attribute-label"
                 data-label="{{ability.label}}">{{ability.label}}</label>
-            <input type="number" class="hypermall-rolling-atribute  hypermall-attribute-input" name="system.abilities.{{akey}}.value"
-                value="{{ability.value}}" data-dtype="Number" />
+            {{#with (lookup @root.system.abilities akey) as |effectiveAbility|}}
+            <div class="hypermall-effective-input-wrapper" title="Effective value shown; click to edit base value">
+                <input type="number" class="hypermall-rolling-atribute hypermall-attribute-input hypermall-base-input-with-overlay" name="system.abilities.{{akey}}.value"
+                    value="{{ability.value}}" data-dtype="Number" />
+                <span class="hypermall-effective-overlay" aria-hidden="true">{{effectiveAbility.value}}</span>
+            </div>
+            {{/with}}
         </div>
 
         {{#each ability.skills as |skill skey|}}
@@ -18,8 +23,15 @@
         <div class="hypermall-attribute-container">
             <label for="system.abilities.skills.{{skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left"
                 data-label="{{skill.label}}">{{skill.label}}</label>
-            <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input" name="system.abilities.{{akey}}.skills.{{skey}}.value"
-                value="{{skill.value}}" data-dtype="Number" />
+            {{#with (lookup @root.system.abilities akey) as |effectiveAbility|}}
+            {{#with (lookup effectiveAbility.skills skey) as |effectiveSkill|}}
+            <div class="hypermall-effective-input-wrapper" title="Effective value shown; click to edit base value">
+                <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input hypermall-base-input-with-overlay" name="system.abilities.{{akey}}.skills.{{skey}}.value"
+                    value="{{skill.value}}" data-dtype="Number" />
+                <span class="hypermall-effective-overlay" aria-hidden="true">{{effectiveSkill.value}}</span>
+            </div>
+            {{/with}}
+            {{/with}}
         </div>
         {{/each}}
     </div>
@@ -28,12 +40,23 @@
 </section>
 <!-- Render skills here -->
 <section class="hypermall-skills-section">
-    <h4>Skills</h4>
+    <div class="flexrow flex-between flex-center" style="margin-bottom: 0.5rem;">
+        <h4 style="margin: 0;">Skills</h4>
+        <label class="resource-label" style="display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+            <input type="checkbox" name="hypermallHideZeroSkills" {{checked hideZeroSkills}}>
+            Hide +0 Skills
+        </label>
+    </div>
     <div class="grid grid-4col">
-        {{#each system.skills as |skill skey|}}
+        {{#each sortedSkills as |entry|}}
         <div class="hypermall-attribute-container">
-            <label for="system.skills.{{skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left" data-label="{{skill.label}}">{{skill.label}}</label>
-            <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input" name="system.skills.{{skey}}.value" value="{{skill.value}}" data-dtype="Number" />
+            <label for="system.skills.{{entry.skey}}.value" class="hypermall-skill-label  hypermall-attribute-label flexlarge align-left" data-label="{{entry.skill.label}}">{{entry.skill.label}}</label>
+            {{#with (lookup @root.system.skills entry.skey) as |effectiveSkill|}}
+            <div class="hypermall-effective-input-wrapper" title="Effective value shown; click to edit base value">
+                <input type="number" class="hypermall-rolling-atribute hypermall-skill-input hypermall-attribute-input hypermall-base-input-with-overlay" name="system.skills.{{entry.skey}}.value" value="{{entry.skill.value}}" data-dtype="Number" />
+                <span class="hypermall-effective-overlay" aria-hidden="true">{{effectiveSkill.value}}</span>
+            </div>
+            {{/with}}
         </div>
         {{/each}}
     </div>

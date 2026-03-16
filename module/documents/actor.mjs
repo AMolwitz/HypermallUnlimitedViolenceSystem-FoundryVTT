@@ -56,6 +56,14 @@ export class HypermallActor extends Actor {
     if (systemData.derived && systemData.abilities?.savvy) {
       systemData.derived.dodge.value = systemData.abilities.savvy.value * 2;
     }
+
+    if (systemData.powerUses) {
+      const meditationSkill = systemData.skills?.meditation?.value ?? 0;
+      const worshipSkill = systemData.skills?.worship?.value ?? 0;
+      const psiPowerBonus = Number(systemData.psiPower ?? 0);
+      const basePowerUsesMax = Math.max(1, meditationSkill * 2, worshipSkill * 2);
+      systemData.powerUses.max = Math.max(1, basePowerUsesMax + psiPowerBonus);
+    }
   }
 
   /**
@@ -117,12 +125,16 @@ export class HypermallActor extends Actor {
       for (const rule of effectItem.system.rules) {
         const path = typeof rule?.path === "string" ? rule.path.trim() : "";
         if (!path) continue;
+        if (!path.startsWith("system.")) continue;
 
         const targetsDerivedData = path.startsWith("system.derived.");
         if (targetsDerivedData !== includeDerivedPaths) continue;
 
+        const relativePath = path.slice("system.".length);
+        if (!relativePath.length) continue;
+
         try {
-          const currentValue = foundry.utils.getProperty(this, path);
+          const currentValue = foundry.utils.getProperty(this.system, relativePath);
           const resolvedValue = this._resolveEffectRuleValue(rule.value, effectItem);
           const nextValue = this._getAppliedEffectValue({
             currentValue,
@@ -130,7 +142,7 @@ export class HypermallActor extends Actor {
             value: resolvedValue,
           });
 
-          foundry.utils.setProperty(this, path, nextValue);
+          foundry.utils.setProperty(this.system, relativePath, nextValue);
         } catch (err) {
           console.error(`Error applying effect rule from "${effectItem.name}":`, err);
         }

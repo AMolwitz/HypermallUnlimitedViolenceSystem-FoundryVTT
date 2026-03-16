@@ -30,4 +30,15 @@ export class HypermallEquipmentSheet extends getCompatibleItemSheet() {
 
         return data;
     }
+
+    /** @override */
+    async _updateObject(event, formData) {
+        await super._updateObject(event, formData);
+
+        if (this.item.type !== "gear") return;
+        const actorSheet = this.item.actor?.sheet;
+        if (typeof actorSheet?._syncLinkedEffectsForGear !== "function") return;
+
+        await actorSheet._syncLinkedEffectsForGear(this.item);
+    }
 }

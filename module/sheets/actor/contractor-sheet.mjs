@@ -62,12 +62,6 @@ export class HypermallContractorSheet extends HypermallActor {
       3: "Phlegmatic"
     }
 
-    // Use a safe clone of the actor data for further operations.
-    const actorData = this.actor.toObject(false);
-
-    // Add the actor's data to context.data for easier access.
-    context.system = actorData.system;
-
     // Check if debt value is negative for conditional styling
     context.debtIsNegative = context.system.debt.value < 0;
     
@@ -81,36 +75,73 @@ export class HypermallContractorSheet extends HypermallActor {
       context.LoanDefault = debtMax;
     }
 
-    // Calculate power uses max: highest of 1, meditation*2, or worship*2
-    const meditationSkill = context.system.skills?.meditation?.value ?? 0;
-    const worshipSkill = context.system.skills?.worship?.value ?? 0;
-    const calculatedPowerUsesMax = Math.max(1, meditationSkill * 2, worshipSkill * 2);
-    
-    // Update the actor's powerUses.max if it differs from calculated value
-    if (context.system.powerUses && context.system.powerUses.max !== calculatedPowerUsesMax) {
-      await this.actor.update({ 'system.powerUses.max': calculatedPowerUsesMax });
-      context.system.powerUses.max = calculatedPowerUsesMax;
-    }
-
     const textEditor = getCompatibleTextEditor()
 
-    context.enrichedBackground = await textEditor.enrichHTML(context.system.background || "")
-    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations || "")
-    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear || "")
-    context.enrichedPassions = await textEditor.enrichHTML(context.system.passions || "")
-    context.enrichedSpecial = await textEditor.enrichHTML(context.system.special || "")
-    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics || "")
+    context.enrichedBackground = await textEditor.enrichHTML(context.sourceSystem.background || "")
+    context.enrichedMutations = await textEditor.enrichHTML(context.sourceSystem.mutations || "")
+    context.enrichedGear = await textEditor.enrichHTML(context.sourceSystem.allGear || "")
+    context.enrichedPassions = await textEditor.enrichHTML(context.sourceSystem.passions || "")
+    context.enrichedSpecial = await textEditor.enrichHTML(context.sourceSystem.special || "")
+    context.enrichedPsionics = await textEditor.enrichHTML(context.sourceSystem.psionics || "")
     
     context.editable = this.isEditable;
 
+    const actorKey = this.actor?.uuid ?? this.actor?.id;
+    const hideZeroSkillsByActor = (await game.user.getFlag("hypermalluv", "hideZeroSkillsByActor")) ?? {};
+    const persistedHideZeroSkills = actorKey ? hideZeroSkillsByActor[actorKey] === true : false;
+    context.hideZeroSkills = this._hideZeroSkills ?? persistedHideZeroSkills;
+    this._hideZeroSkills = context.hideZeroSkills;
+
+    let persistedDiceRollerSelections = (await this.actor.getFlag("hypermalluv", "diceRollerSelections")) ?? null;
+    if (!persistedDiceRollerSelections && actorKey) {
+      const diceRollerSelectionsByActor = (await game.user.getFlag("hypermalluv", "diceRollerSelectionsByActor")) ?? {};
+      persistedDiceRollerSelections = diceRollerSelectionsByActor[actorKey] ?? {};
+    }
+    context.selectedRollStat = String(persistedDiceRollerSelections.stat ?? "");
+    context.selectedRollSkill = String(persistedDiceRollerSelections.skill ?? "");
+
+    const sourceSkills = context.sourceSystem?.skills ?? {};
+    const effectiveSkills = context.system?.skills ?? {};
+    context.sortedSkills = Object.entries(sourceSkills)
+      .filter(([skey]) => {
+        if (!context.hideZeroSkills) return true;
+        return Number(effectiveSkills?.[skey]?.value ?? 0) !== 0;
+      })
+      .sort(([, skillA], [, skillB]) => {
+        const labelA = String(skillA?.label ?? "");
+        const labelB = String(skillB?.label ?? "");
+        return labelA.localeCompare(labelB);
+      })
+      .map(([skey, skill]) => ({ skey, skill }));
+
+    const sourceAbilities = context.sourceSystem?.abilities ?? {};
+    const effectiveAbilities = context.system?.abilities ?? {};
+    context.competencyAbilities = Object.fromEntries(
+      Object.entries(sourceAbilities).map(([akey, ability]) => {
+        const sourceAbilitySkills = ability?.skills ?? {};
+        const effectiveAbilitySkills = effectiveAbilities?.[akey]?.skills ?? {};
+        const filteredAbilitySkills = Object.fromEntries(
+          Object.entries(sourceAbilitySkills).filter(([skey]) => {
+            if (!context.hideZeroSkills) return true;
+            return Number(effectiveAbilitySkills?.[skey]?.value ?? 0) !== 0;
+          })
+        );
+
+        return [akey, {
+          ...ability,
+          skills: filteredAbilitySkills,
+        }];
+      })
+    );
+
     // Prepare character data and items.
-    if (actorData.type == 'contractor') {
+    if (this.actor.type == 'contractor') {
       await this._prepareItems(context);
       // this._prepareCharacterData(context);
     }
 
     // Prepare NPC data and items.
-    if (actorData.type == 'npc') {
+    if (this.actor.type == 'npc') {
       await this._prepareItems(context);
     }
 
@@ -191,6 +222,21 @@ export class HypermallContractorSheet extends HypermallActor {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find('#hypermall-roll-stat, #hypermall-roll-skill').on('change', async () => {
+      await this._persistDiceRollerSelections(html);
+    });
+
+    html.find('input[name="hypermallHideZeroSkills"]').on('change', async (event) => {
+      this._hideZeroSkills = event.currentTarget.checked;
+      const actorKey = this.actor?.uuid ?? this.actor?.id;
+      const hideZeroSkillsByActor = (await game.user.getFlag("hypermalluv", "hideZeroSkillsByActor")) ?? {};
+      if (actorKey) {
+        hideZeroSkillsByActor[actorKey] = this._hideZeroSkills;
+        await game.user.setFlag("hypermalluv", "hideZeroSkillsByActor", hideZeroSkillsByActor);
+      }
+      this.render(false);
+    });
 
     // Ensure dropdowns reflect current values
     const handedSelect = html.find('select[name="system.handedness"]');
@@ -339,6 +385,31 @@ export class HypermallContractorSheet extends HypermallActor {
     });
   }
 
+  async _persistDiceRollerSelections(html = this.element) {
+    const host = html ?? this.element;
+    if (!host?.find) return;
+
+    const selections = {
+      stat: String(host.find('#hypermall-roll-stat').val() ?? ""),
+      skill: String(host.find('#hypermall-roll-skill').val() ?? ""),
+    };
+
+    await this.actor.setFlag("hypermalluv", "diceRollerSelections", selections);
+
+    const actorKey = this.actor?.uuid ?? this.actor?.id;
+    if (actorKey) {
+      const diceRollerSelectionsByActor = (await game.user.getFlag("hypermalluv", "diceRollerSelectionsByActor")) ?? {};
+      diceRollerSelectionsByActor[actorKey] = selections;
+      await game.user.setFlag("hypermalluv", "diceRollerSelectionsByActor", diceRollerSelectionsByActor);
+    }
+  }
+
+  /** @override */
+  async close(options = {}) {
+    await this._persistDiceRollerSelections(this.element);
+    return super.close(options);
+  }
+
   async _onCreateGear(event) {
     event.preventDefault();
     const header = event.currentTarget;
@@ -413,7 +484,7 @@ export class HypermallContractorSheet extends HypermallActor {
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [itemData]);
 
     if (dropType === "gear" && createdItems.length) {
-      await this._createLinkedEffectsForGear(createdItems[0]);
+      await this._syncLinkedEffectsForGear(createdItems[0]);
     }
 
     return createdItems;
@@ -432,10 +503,12 @@ export class HypermallContractorSheet extends HypermallActor {
     const carryType = String(select.value ?? "").trim();
     if (!carryType.length) return;
 
-    await this.actor.updateEmbeddedDocuments("Item", [{
+    const [updatedGear] = await this.actor.updateEmbeddedDocuments("Item", [{
       _id: itemId,
       "system.carryType": carryType
     }]);
+
+    await this._syncLinkedEffectsForGear(updatedGear ?? this.actor.items.get(itemId));
   }
 
   _onItemEdit(event) {
@@ -507,6 +580,8 @@ export class HypermallContractorSheet extends HypermallActor {
    * @private
    */
   async _onRoll(event) {
+    await this._persistDiceRollerSelections(this.element);
+
     event.preventDefault();
     const triggeringElement = event.currentTarget;
 

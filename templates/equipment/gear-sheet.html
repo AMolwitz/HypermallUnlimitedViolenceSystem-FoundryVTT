@@ -11,15 +11,7 @@
       <input name="system.price" type="number" value="{{system.price}}"/>
       <label for="quantity" class="resource-label">Quantity</label>
       <input name="system.quantity" type="number" value="{{system.quantity}}"/>
-      <label for="system.carryType" class="resource-label">Carry Type</label>
-      <select name="system.carryType" data-dtype="String">
-        <option value="held-1h" {{#if (eq item.system.carryType "held-1h")}}selected{{/if}}>Held 1H</option>
-        <option value="held-2h" {{#if (eq item.system.carryType "held-2h")}}selected{{/if}}>Held 2H</option>
-        <option value="hardpoint" {{#if (eq item.system.carryType "hardpoint")}}selected{{/if}}>Hardpoint</option>
-        <option value="worn" {{#if (eq item.system.carryType "worn")}}selected{{/if}}>Worn</option>
-        <option value="stowed" {{#if (eq item.system.carryType "stowed")}}selected{{/if}}>Stowed</option>
-        <option value="dropped" {{#if (eq item.system.carryType "dropped")}}selected{{/if}}>Dropped</option>
-      </select>
+
       </div>
   </header>
 

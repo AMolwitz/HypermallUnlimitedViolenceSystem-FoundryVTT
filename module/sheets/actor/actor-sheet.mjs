@@ -19,8 +19,10 @@ export class HypermallActor extends getCompatibleActorSheet() {
     getData() {
         const data = super.getData();
 
-        const actorData = this.actor.toObject(false);
-        data.system = actorData.system;
+        const preparedActorData = this.actor.toObject(false);
+        const sourceActorData = this.actor.toObject(true);
+        data.system = preparedActorData.system;
+        data.sourceSystem = sourceActorData.system;
         data.actor = this.actor;
 
         return data;
@@ -55,6 +57,10 @@ export class HypermallActor extends getCompatibleActorSheet() {
         return this.actor.items
             .filter((item) => item.type === "effect" && item.getFlag("hypermalluv", "linkedGearId") === gearId)
             .map((item) => item.id);
+    }
+
+    _shouldApplyLinkedEffectsForCarryType(carryType) {
+        return ["worn", "held-1h", "held-2h", "hardpoint"].includes(String(carryType ?? "").trim());
     }
 
     async _createLinkedEffectsForGear(gearItem) {
@@ -106,6 +112,22 @@ export class HypermallActor extends getCompatibleActorSheet() {
         const linkedEffectIds = this._getLinkedEffectIdsForGear(item.id);
         const deleteIds = [item.id, ...linkedEffectIds];
         return this.actor.deleteEmbeddedDocuments("Item", deleteIds);
+    }
+
+    async _syncLinkedEffectsForGear(gearItem) {
+        if (!gearItem || gearItem.type !== "gear") return;
+
+        const carryType = gearItem.system?.carryType ?? "stowed";
+
+        if (this._shouldApplyLinkedEffectsForCarryType(carryType)) {
+            await this._createLinkedEffectsForGear(gearItem);
+            return;
+        }
+
+        const linkedEffectIds = this._getLinkedEffectIdsForGear(gearItem.id);
+        if (linkedEffectIds.length) {
+            await this.actor.deleteEmbeddedDocuments("Item", linkedEffectIds);
+        }
     }
 
     async _onRollHitLocation(event) {

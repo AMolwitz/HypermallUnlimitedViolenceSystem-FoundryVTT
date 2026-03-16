@@ -477,6 +477,56 @@
   -ms-flex: 0 0 20%;
   flex: 0 0 20%;
 }
+.hypermall .hypermall-effective-input-wrapper {
+  position: relative;
+  margin-left: auto;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 20%;
+  flex: 0 0 20%;
+}
+.hypermall .hypermall-effective-input-wrapper .hypermall-attribute-input {
+  margin-left: 0;
+  width: 100%;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+.hypermall .hypermall-base-input-with-overlay:not(:focus) {
+  color: transparent;
+  caret-color: transparent;
+}
+.hypermall .hypermall-effective-overlay {
+  position: absolute;
+  inset: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  pointer-events: none;
+  background-color: white;
+  color: black;
+}
+.hypermall .hypermall-base-input-with-overlay:focus + .hypermall-effective-overlay {
+  display: none;
+}
+.hypermall .hypermall-effective-field-wrapper {
+  position: relative;
+  width: 100%;
+}
+.hypermall .hypermall-effective-field-wrapper > input,
+.hypermall .hypermall-effective-field-wrapper > textarea {
+  width: 100%;
+  background-color: white;
+  color: black;
+}
+.hypermall .hypermall-effective-field-wrapper > .hypermall-effective-overlay {
+  background-color: transparent;
+}
 .hypermall .hypermall-attribute-container {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -718,6 +768,98 @@
   align-items: center;
   position: relative;
   overflow: hidden;
+}
+
+/* Dark mode */
+body.hypermalluv-dark-mode .hypermall,
+body.hypermalluv-dark-mode .hypermall .hypermall {
+  background-color: #121417;
+  color: #e6e7ea;
+}
+
+body.hypermalluv-dark-mode .hypermall .contractor {
+  background-color: #1a1d22;
+}
+
+body.hypermalluv-dark-mode .hypermall .hypermall-header {
+  background-color: #631a1a;
+  color: #f3f3f3;
+}
+
+body.hypermalluv-dark-mode .hypermall .sheet-tabs .item,
+body.hypermalluv-dark-mode .hypermall nav.sheet-tabs .item {
+  color: #ffffff;
+}
+
+body.hypermalluv-dark-mode .hypermall .sheet-tabs .item:hover,
+body.hypermalluv-dark-mode .hypermall .sheet-tabs .item:focus {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+body.hypermalluv-dark-mode .hypermall .sheet-tabs .item.active {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+body.hypermalluv-dark-mode .hypermall input,
+body.hypermalluv-dark-mode .hypermall select,
+body.hypermalluv-dark-mode .hypermall textarea,
+body.hypermalluv-dark-mode .hypermall .hypermall-attribute-input,
+body.hypermalluv-dark-mode .hypermall .hypermall-effective-field-wrapper > input,
+body.hypermalluv-dark-mode .hypermall .hypermall-effective-field-wrapper > textarea {
+  background-color: #20252b;
+  color: #e6e7ea;
+  border-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall .hypermall-effective-overlay {
+  background-color: #20252b;
+  color: #e6e7ea;
+}
+
+body.hypermalluv-dark-mode .hypermall .hypermall-container,
+body.hypermalluv-dark-mode .hypermall .hypermall-editor-container,
+body.hypermalluv-dark-mode .hypermall .hypermall-item-info-container {
+  border-color: #3a4048;
+  outline-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall .items-list {
+  color: #d4d7db;
+}
+
+body.hypermalluv-dark-mode .hypermall .items-list .items-header {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall .items-list .item {
+  border-bottom-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall .items-list .item .item-name {
+  color: #e6e7ea;
+}
+
+body.hypermalluv-dark-mode .hypermall .items-list .item .item-prop,
+body.hypermalluv-dark-mode .hypermall .items-list .item .item-carry-type-header,
+body.hypermalluv-dark-mode .hypermall .items-list .item .item-carry-type-cell,
+body.hypermalluv-dark-mode .hypermall .effects .item .effect-source,
+body.hypermalluv-dark-mode .hypermall .effects .item .effect-duration,
+body.hypermalluv-dark-mode .hypermall .effects .item .effect-controls {
+  border-left-color: #3a4048;
+  border-right-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall button {
+  background-color: #272c33;
+  color: #e6e7ea;
+  border-color: #3a4048;
+}
+
+body.hypermalluv-dark-mode .hypermall .profile-img {
+  background-color: #20252b;
 }
 
 #sidebar .chat-message {

@@ -20,29 +20,19 @@ export class HypermallNPCSheet extends HypermallActor {
   async getData() {
     const context = super.getData();
 
-    const actorData = this.actor.toObject(false);
+    const applyNpcSheetDefaults = (systemData) => {
+      systemData.meat ??= { value: 2, max: 6 };
+      systemData.stress ??= { value: 2, max: 6 };
+      systemData.debt ??= { value: 0, max: 6 };
+      systemData.phrenology ??= { active: "", one: "", two: "", three: "", four: "", five: "", six: "" };
+      systemData.moves ??= [""];
+      systemData.damage ??= "";
+    };
+
+    applyNpcSheetDefaults(context.system);
+    applyNpcSheetDefaults(context.sourceSystem);
 
     // Initialize meat, stress, debt if they don't exist
-    if (actorData.system.meat == undefined) {
-      actorData.system.meat = {};
-      actorData.system.meat.value = 2;
-      actorData.system.meat.max = 6;
-    }
-
-    if (actorData.system.stress == undefined) {
-      actorData.system.stress = {};
-      actorData.system.stress.value = 2;
-      actorData.system.stress.max = 6;
-    }
-
-    if (actorData.system.debt == undefined) {
-      actorData.system.debt = {};
-      actorData.system.debt.value = 0;
-      actorData.system.debt.max = 6;
-    }
-
-    context.system = actorData.system;
-    
     // Check if debt value is negative for conditional styling
     context.debtIsNegative = context.system.debt.value < 0;
     
@@ -58,23 +48,23 @@ export class HypermallNPCSheet extends HypermallActor {
     
     const textEditor = getCompatibleTextEditor()
 
-    context.enrichedBackground = await textEditor.enrichHTML(context.system.background)
-    context.enrichedPsionics = await textEditor.enrichHTML(context.system.psionics)
-    context.enrichedMutations = await textEditor.enrichHTML(context.system.mutations)
-    context.enrichedQuote = await textEditor.enrichHTML(context.system.quote)
-    context.enrichedGear = await textEditor.enrichHTML(context.system.allGear)
-    context.enrichedPhrenology = await textEditor.enrichHTML(Object.values(context.system.phrenology).join("\n"))
+    context.enrichedBackground = await textEditor.enrichHTML(context.sourceSystem.background || "")
+    context.enrichedPsionics = await textEditor.enrichHTML(context.sourceSystem.psionics || "")
+    context.enrichedMutations = await textEditor.enrichHTML(context.sourceSystem.mutations || "")
+    context.enrichedQuote = await textEditor.enrichHTML(context.sourceSystem.quote || "")
+    context.enrichedGear = await textEditor.enrichHTML(context.sourceSystem.allGear || "")
+    context.enrichedPhrenology = await textEditor.enrichHTML(Object.values(context.sourceSystem.phrenology).join("\n"))
 
     context.editable = this.isEditable;
 
     // Prepare character data and items.
-    if (actorData.type == 'contractor') {
+    if (this.actor.type == 'contractor') {
       await this._prepareItems(context);
       // this._prepareCharacterData(context);
     }
 
     // Prepare NPC data and items.
-    if (actorData.type == 'npc') {
+    if (this.actor.type == 'npc') {
       await this._prepareItems(context);
     }
 
@@ -266,6 +256,7 @@ export class HypermallNPCSheet extends HypermallActor {
 
     html.on('click', '.gear-edit', this._onItemEdit.bind(this));
     html.on('click', '.gear-delete', this._onItemDelete.bind(this));
+    html.on('change', '.gear-carry-type', this._onChangeCarryType.bind(this));
     html.on('click', '.effect-edit', this._onItemEdit.bind(this));
     html.on('click', '.effect-delete', this._onItemDelete.bind(this));
 
@@ -376,10 +367,31 @@ export class HypermallNPCSheet extends HypermallActor {
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [itemData]);
 
     if (dropType === "gear" && createdItems.length) {
-      await this._createLinkedEffectsForGear(createdItems[0]);
+      await this._syncLinkedEffectsForGear(createdItems[0]);
     }
 
     return createdItems;
+  }
+
+  async _onChangeCarryType(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const select = event.target?.closest?.("select.gear-carry-type");
+    if (!select) return;
+
+    const itemId = select.dataset.itemId ?? select.closest(".item")?.dataset.itemId;
+    if (!itemId) return;
+
+    const carryType = String(select.value ?? "").trim();
+    if (!carryType.length) return;
+
+    const [updatedGear] = await this.actor.updateEmbeddedDocuments("Item", [{
+      _id: itemId,
+      "system.carryType": carryType
+    }]);
+
+    await this._syncLinkedEffectsForGear(updatedGear ?? this.actor.items.get(itemId));
   }
 
   _onItemEdit(event) {

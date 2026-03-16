@@ -8,15 +8,15 @@
             <select id="hypermall-roll-stat" class="hypermall-roll-selector" data-dtype="String">
                 {{#each system.abilities as |ability akey|}}
                 {{#if ability.label}}
-                <option value="{{akey}}">{{ability.label}}</option>
+                <option value="{{akey}}" {{#if (eq akey @root.selectedRollStat)}}selected{{/if}}>{{ability.label}}</option>
                 {{/if}}
                 {{/each}}
             </select>
 
             <select id="hypermall-roll-skill" class="hypermall-roll-selector" data-dtype="String">
-                <option value="">(none)</option>
+                <option value="" {{#if (eq @root.selectedRollSkill "")}}selected{{/if}}>(none)</option>
                 {{#each system.skills as |skill skey|}}
-                <option value="{{skey}}">{{skill.label}}</option>
+                <option value="{{skey}}" {{#if (eq skey @root.selectedRollSkill)}}selected{{/if}}>{{skill.label}}</option>
                 {{/each}}
             </select>
 

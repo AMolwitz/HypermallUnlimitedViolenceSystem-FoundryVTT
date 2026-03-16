@@ -32,6 +32,11 @@ import { getCompatibleActorsObject, getCompatibleItemsObject, getCompatibleActor
 /*  Init Hook                                   */
 /* -------------------------------------------- */
 export const socketEventChannel = "system.hypermalluv";
+const DARK_MODE_CLASS = "hypermalluv-dark-mode";
+
+function applyDarkMode(enabled) {
+  document.body.classList.toggle(DARK_MODE_CLASS, Boolean(enabled));
+}
 
 async function seedCoreRolltablesFromCompendium() {
   const packId = "hypermalluv.core-rolltables";
@@ -123,6 +128,16 @@ async function seedStarterEffectsLibrary() {
         description: "Decreases Stress max by 2 while this effect is present.",
         rules: [
           { path: "system.stress.max", operation: "subtract", value: "2" }
+        ],
+      },
+    },
+    {
+      name: "Starter Effect: Power Uses Up",
+      system: {
+        description: "Increases Power Uses by 1 while this effect is present.",
+        rules: [
+          { path: "system.psiPower", operation: "add", value: "1" },
+          { path: "system.powerUses.value", operation: "add", value: "1" }
         ],
       },
     },
@@ -228,6 +243,16 @@ Hooks.once('init', async function () {
     default: false,
   });
 
+  game.settings.register("hypermalluv", "darkMode", {
+    name: "Dark Mode",
+    hint: "Use a darker visual theme for HypermallUV sheets.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: (value) => applyDarkMode(value),
+  });
+
 });
 
 /* -------------------------------------------- */
@@ -235,6 +260,8 @@ Hooks.once('init', async function () {
 /* -------------------------------------------- */
 
 Hooks.once("ready", async function () {
+  applyDarkMode(game.settings.get("hypermalluv", "darkMode"));
+
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 
   if (game.user.isGM && !game.settings.get("hypermalluv", "coreRolltablesSeeded")) {
