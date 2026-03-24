@@ -10,8 +10,9 @@
       <div class="hypermall-contractor-header">
         <h1>SLAUGHTR<sup>TM</sup> CONTRACTOR PROFILE</h1>
       </div>
+      
       <div class="hypermall-profile-img">
-        <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}'s ID photo" height="200" />
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}'s ID photo" height="200" />
       </div>
     </div>
     <div class="resources grid grid-2col hypermall-container hypermall-profile">
@@ -161,10 +162,8 @@
     <a class="item" data-tab="thresholds">Holistic Wellness (Thresholds)</a>
     <a class="item" data-tab="mutations">Mutations</a>
     <a class="item" data-tab="psionics">Psionics</a>
-    <a class="item" data-tab="passions">Passions</a>
     <a class="item" data-tab="gear">Gear</a>
     <a class="item" data-tab="effects">Effects</a>
-    <a class="item" data-tab="foundry">Foundry Data</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -210,11 +209,6 @@
       {{> "actor-psionics"}}
     </div>
 
-    {{!-- Passions Tab --}}
-    <div class="tab hypermall-passions" data-group="primary" data-tab="passions">
-      {{> "actor-passions"}}
-    </div>
-
     {{!-- Gear Tab --}}
     <div class="tab hypermall-gear" data-group="primary" data-tab="gear" data-drop-type="gear">
       {{> "actor-gear-list"}}
@@ -224,12 +218,6 @@
     <div class="tab hypermall-effects" data-group="primary" data-tab="effects" data-drop-type="effect">
       {{> "actor-effects"}}
     </div>
-
-    {{!-- Foundry Information --}}
-    <div class="tab hypermall-foundry" data-group="primary" data-tab="foundry">
-      {{> "actor-foundry-data"}}
-    </div>
-
 
   </section>
 </form>

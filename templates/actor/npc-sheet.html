@@ -5,23 +5,27 @@
 
   <!-- Sheet Header -->
   <header class="sheet-header">
-    <div class="header-fields">
+    <div class="header-fields flexrow flex-between">
       <div class="hypermall-npc-header">
         <h1>NPC PROFILE</h1>
       </div>
 
-      <div class="resources grid grid-2col hypermall-container hypermall-profile">
-
-        <div class="resource flex-group-center">
-          <label for="name" class="resource-label">Name</label>
-          <div class="resource-content flexrow flex-center flex-between">
-            <input class="hypermall-actor-name" type="text" name="name" value="{{actor.name}}" data-dtype="String" />
-          </div>
-        </div>
-
-        {{> "actor-thresholds"}}
-
+      <div class="hypermall-profile-img">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}'s ID photo" height="200" />
       </div>
+    </div>
+
+    <div class="resources grid grid-2col hypermall-container hypermall-profile">
+
+      <div class="resource flex-group-center">
+        <label for="name" class="resource-label">Name</label>
+        <div class="resource-content flexrow flex-center flex-between">
+          <input class="hypermall-actor-name" type="text" name="name" value="{{actor.name}}" data-dtype="String" />
+        </div>
+      </div>
+
+      {{> "actor-thresholds"}}
+
     </div>
   </header>
 
@@ -31,7 +35,6 @@
     <a class="item" data-tab="actions">Actions</a>
     <a class="item" data-tab="gear">Gear</a>
     <a class="item" data-tab="effects">Effects</a>
-    <a class="item" data-tab="foundry">Foundry Data</a>
   </nav>
 
   <!-- Sheet Body -->
@@ -88,7 +91,7 @@
       <div class="grid grid-2col">
         <div>
             <div class="hypermall-header">
-                <label>Quote</label>
+                <label>Quotes</label>
             </div>
             <div class="hypermall-editor-container">
               {{editor
@@ -141,13 +144,6 @@
     <!-- Effects Tab -->
     <div class="tab hypermall-effects" data-group="primary" data-tab="effects" data-drop-type="effect">
       {{> "actor-effects"}}
-    </div>
-
-    
-
-    <!-- Foundry Tab -->
-    <div class="tab hypermall-foundry" data-group="primary" data-tab="foundry">
-      {{> "actor-foundry-data"}}
     </div>
 
   </section>

@@ -1,6 +1,6 @@
-{{> "actor-dice-roller"}}
-
 {{> "actor-damage"}}
+
+{{> "actor-dice-roller"}}
 
 <section class="grid grid-4col">
     {{#each competencyAbilities as |ability akey|}}
@@ -38,6 +38,41 @@
     {{/if}}
     {{/each}}
 </section>
+<!-- Passions & Special -->
+<section class="hypermall-passions-inline">
+    <div class="grid grid-2col" style="gap: 0.25rem 1rem; margin-bottom: 0.5rem;">
+        <div>
+            <div class="hypermall-header" style="margin-bottom: 0.15rem;">
+                <label>Passions</label>
+            </div>
+            <div class="hypermall-editor-container hypermall-editor-compact">
+                {{editor
+                enrichedPassions
+                target="system.passions"
+                button=true
+                engine="prosemirror"
+                editable=editable
+                collaborate=false}}
+            </div>
+        </div>
+        <div>
+            <div class="hypermall-header" style="margin-bottom: 0.15rem;">
+                <label>Special</label>
+            </div>
+            <div class="hypermall-editor-container hypermall-editor-compact">
+                {{editor
+                enrichedSpecial
+                target="system.special"
+                button=true
+                engine="prosemirror"
+                editable=editable
+                collaborate=false}}
+            </div>
+        </div>
+    </div>
+
+</section>
+
 <!-- Render skills here -->
 <section class="hypermall-skills-section">
     <div class="flexrow flex-between flex-center" style="margin-bottom: 0.5rem;">
@@ -59,6 +94,9 @@
             {{/with}}
         </div>
         {{/each}}
+    </div>
+    <div class="center" style="margin-bottom: 0.5rem;">
+        <button type="button" class="hypermall-new-day">New Day</button>
     </div>
 </section>
 

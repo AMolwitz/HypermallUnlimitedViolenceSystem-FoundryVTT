@@ -447,6 +447,16 @@
   min-height: 150px;
   height: auto;
 }
+.hypermall .hypermall-editor-compact > .editor-content {
+  min-height: 40px;
+}
+.hypermall .hypermall-editor-compact > .editor.prosemirror {
+  min-height: 80px;
+}
+.hypermall .hypermall-passions-inline ol {
+  margin: 0;
+  padding-left: 1.2em;
+}
 .hypermall .hypermall-item-info-container {
   margin: 5px;
   outline: 2px;
