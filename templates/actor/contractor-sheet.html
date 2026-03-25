@@ -1,14 +1,11 @@
 <form class="{{cssClass}} {{actor.type}} flexcol hypermall" autocomplete="off">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
   {{!-- Sheet Header --}}  <header class="sheet-header">
     <div class="header-fields flexrow flex-between">
       {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
       use both the "grid" and "grid-Ncol" class where "N" can be any number
       from 1 to 12 and will create that number of columns. --}}
       <div class="hypermall-contractor-header">
-        <h1>SLAUGHTR<sup>TM</sup> CONTRACTOR PROFILE</h1>
+        <h1><span class="hypermall-brand-red">SLAUGHTR<sup>TM</sup></span> CONTRACTOR PROFILE</h1>
       </div>
       
       <div class="hypermall-profile-img">
@@ -204,7 +201,7 @@
         <label class="resource-label">Power Uses: </label>
         <span class="hypermall-power-uses-indicator">{{system.powerUses.value}}</span>
         <span> / </span>
-        <span class="hypermall-thresholds-max">{{system.powerUses.max}}</span>
+        <span class="hypermall-power-uses-indicator">{{system.powerUses.max}}</span>
       </div>
       {{> "actor-psionics"}}
     </div>

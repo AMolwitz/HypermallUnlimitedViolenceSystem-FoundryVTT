@@ -7,7 +7,7 @@
     </div>
 
     <section class="hypermall-container">
-        <div class="hypermall-header">
+        <div class="hypermall-header hypermall-header-red">
             <label class="resource-label center-align" for="hypermall-meater">Meat</label>
         </div>
 
@@ -27,7 +27,7 @@
 
     <section class=" hypermall-container">
 
-        <div class="hypermall-header">
+        <div class="hypermall-header hypermall-header-red">
             <label class="resource-label center-align " for="hypermall-stresshold">Stress</label>
         </div>
 
@@ -46,7 +46,7 @@
     </section>
     <section class=" hypermall-container">
 
-        <div class="hypermall-header">
+        <div class="hypermall-header hypermall-header-red">
             <label class="resource-label center-align" for="hypermall-debter" {{#if debtIsNegative}}style="color: black;"{{/if}}>Debt</label>
         </div>
 
@@ -69,11 +69,13 @@
         {{/if}}
     </section>
     <div class="grid grid-1col center">
-        <div class="grid grid-2col center">
-            <label class="resource-label center-align" for="system.armour">Armour</label>
-            <div class="hypermall-effective-field-wrapper" title="Effective value shown; click to edit base value">
-                <input type="number" class="hypermall-base-input-with-overlay" name="system.armour" value="{{sourceSystem.armour}}" data-dtype="Number" />
-                <span class="hypermall-effective-overlay" aria-hidden="true">{{system.armour}}</span>
+        <div class="hypermall-armour-diamond-wrap center">
+            <label class="resource-label center-align" for="system.armour">Armour </label>
+            <div class="hypermall-armour-diamond">
+                <div class="hypermall-effective-field-wrapper" title="Effective value shown; click to edit base value">
+                    <input type="number" class="hypermall-base-input-with-overlay" name="system.armour" value="{{sourceSystem.armour}}" data-dtype="Number" />
+                    <span class="hypermall-effective-overlay" aria-hidden="true">{{system.armour}}</span>
+                </div>
             </div>
         </div>
     </div>
